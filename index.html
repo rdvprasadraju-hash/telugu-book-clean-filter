@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v42.0</title>
+<title>తెలుగు బుక్ లేఅవుట్ & ఆటో-కరెక్షన్ ప్రో</title>
 <style>
   :root {
     --primary: #0f5132;
@@ -11,13 +11,13 @@
     --border-color: #dee2e6;
   }
   body {
-    font-family: 'Mandali', 'Pothana', 'Segoe UI', sans-serif;
+    font-family: 'Mandali', 'Segoe UI', sans-serif;
     margin: 0; padding: 0;
     background-color: #f1f3f5; color: #212529;
     display: flex; flex-direction: column; height: 100vh;
   }
   header {
-    background-color: #0f5132; color: white;
+    background-color: var(--primary); color: white;
     padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
   }
   header h1 { margin: 0; font-size: 22px; }
@@ -30,55 +30,38 @@
   .action-btn { width: 100%; padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; border-radius: 6px; color: white; }
   .btn-primary { background-color: var(--primary); }
   .btn-secondary { background-color: #6c757d; }
-  .btn-info { background-color: #0d6efd; }
-  .btn-danger { background-color: #dc3545; }
-  
   .main-editor { flex: 1; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 15px; }
   .editor-block { display: flex; flex-direction: column; flex: 1; }
   textarea { width: 100%; flex: 1; padding: 16px; font-size: 16px; line-height: 1.7; border: 1px solid var(--border-color); border-radius: 8px; resize: none; }
-  
   .premium-preview {
     width: 100%; flex: 1; background-color: #fffdf6; border: 1px solid var(--border-color); border-radius: 8px;
-    padding: 35px; box-sizing: border-box; font-size: 19px; line-height: 2.0; white-space: pre-wrap; overflow-y: auto;
-  }
-  
-  /* అంతర్జాతీయ బుక్ ప్రచురణ లేఅవుట్ ప్రమాణాలు */
-  .main-chapter-style { font-size: 36px !important; font-weight: bold !important; color: #0f5132 !important; text-align: center !important; margin: 30px 0 15px 0 !important; display: block !important; line-height: 1.3 !important; }
-  .book-heading-style { font-size: 26px !important; font-weight: bold !important; color: #198754 !important; text-align: center !important; margin: 20px 0 !important; display: block !important; line-height: 1.4 !important; }
-  .sub-heading-style { font-size: 22px !important; font-weight: bold !important; color: #343a40 !important; margin: 15px 0 !important; display: block !important; }
-  .book-paragraph { margin-bottom: 18px; text-align: justify; display: block; line-height: 1.8; }
-  @media print {
-    body * { visibility: hidden; }
-    #cleanContainer, #cleanContainer * { visibility: visible; }
-    #cleanContainer { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 0; }
+    padding: 24px; box-sizing: border-box; font-size: 19px; line-height: 1.9; white-space: pre-wrap; overflow-y: auto;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v42.0</h1>
+  <h1>📚 తెలుగు బుక్ లేఅవుట్ & ఆటో-కరెక్షన్ ప్రో</h1>
 </header>
 
 <div class="workspace">
   <div class="sidebar">
     <div class="panel-section">
-      <button class="action-btn btn-primary" onclick="window.processBookPublishing()">✨ లేఅవుట్ రన్ చేయి</button>
+      <button class="action-btn btn-primary" onclick="processBookPublishing()">✨ లేఅవుట్ రన్ చేయి</button>
       <div style="height: 8px;"></div>
-      <button class="action-btn btn-secondary" onclick="window.copyText()">📋 టెక్స్ట్ కాపీ చేయి</button>
+      <button class="action-btn btn-secondary" onclick="copyText()">📋 టెక్స్ట్ కాపీ చేయి</button>
       <div style="height: 8px;"></div>
-      <button class="action-btn btn-info" onclick="window.print()">🖨️ పీడీఎఫ్ / ప్రింట్ తీయి</button>
-      <div style="height: 8px;"></div>
-      <button class="action-btn btn-danger" onclick="window.clearText()">🗑️ క్లియర్ బోర్డు</button>
+      <button class="action-btn style='background-color:#dc3545; color:white;'" onclick="clearText()">🗑️ క్లియర్ బోర్డు</button>
     </div>
   </div>
 
   <div class="main-editor">
     <div class="editor-block">
-      <textarea id="rough" oninput="saveDraft()" placeholder="మీ పుస్తకం రఫ్ టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
+      <textarea id="rough" placeholder="మీ పుస్తకం రఫ్ టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
     </div>
     <div class="editor-block">
-      <div id="cleanContainer" class="premium-preview">అంతర్జాతీయ పీడీఎఫ్ బుక్ లేఅవుట్ ఇక్కడ ప్రత్యక్షమవుతుంది...</div>
+      <div id="cleanContainer" class="premium-preview">సరిదిద్దబడిన టెక్స్ట్ ఇక్కడ కనిపిస్తుంది...</div>
     </div>
   </div>
 </div>
@@ -86,153 +69,95 @@
 <textarea id="clean" style="display:none;"></textarea>
 
 <script>
-function saveDraft() { localStorage.setItem("rough_draft", document.getElementById("rough").value); }
-window.onload = function() {
-  let saved = localStorage.getItem("rough_draft");
-  if(saved) { document.getElementById("rough").value = saved; }
+const spellingFixes = {
+  "ముగషింపు": "ముగింపు", "శాసనిం": "శాసనం", "శూనయింలోని": "శూన్యంలోని",
+  "వ్యతిర్ేక": "వ్యతిరేక", "గురుత్వాకరిణ": "గురుత్వాకర్షణ", "త్ో": "తో",
+  "పరయాణవనిి": "ప్రయాణాన్ని", "విశ్ా": "విశ్వ", "ముగషించే": "ముగించే",
+  "పర్షణవమ": "పరిణామ", "ధరమిం": "ధర్మం", "ధరమ██నం": "ధర్మశాసనం",
+  "ధరమ██సనం": "ధర్మశాసనం", "ధరమశ్వసనం": "ధర్మశాసనం", "శూనయ": "శూన్య",
+  "స్టథతిలో": "స్థితిలో", "విశ్వవనిi": "విశ్వాన్ని", "కవంతి": "కాంతి",
+  "వేగంగవ": "వేగంగా", "నెటేిస్టన": "నెట్టేసిన", "ర్షవ్ర్్": "రివర్స్",
+  "శ్క్ిత": "శక్తి", "ఆవేశ్ంతోనెైతే": "ఆవేశంతోనైతే", "ప్్వారంభంచందో": "ప్రారంభించిందో",
+  "ఇపపుడు": "ఇప్పుడు", "యొकక": "యొక్క", "అశ్వంతిని": "అశాంతిని",
+  "క్రూరతావనిి": "క్రూరత్వాన్ని", "స్టదధమవపతోంది": "సిద్ధమవుతోంది",
+  "శ్కతు": "శక్తుల", "ఘరషణ": "ఘర్షణ", "కోటల": "కోట్ల", "సంవతసరవల": "సంవత్సరాల",
+  "तरవవత": "తర్వాత", "తరవవత": "తర్వాత", "మేధసుసగవ": "మేధస్సుగా",
+  "పాశ్వంత": "ప్రశాంత", "పాశ్వంతంగవ": "ప్రశాంతంగా", "స్టథти": "స్థితి",
+  "స్టథతి": "స్థితి", "వెైపప": "వైపు", "అడుగులత": "అడుగులు", "వేస్ు": "వేస్తోంది",
+  "శ్తాబదపప": "శతాబ్దపు", "పెదద": "పెద్ద", "ఉదయం": "ఉదయం", "ఇలలంతా": "ఇల్లంతా",
+  "గందరగోళ్ం": "గందరగోళం", "గందరగోళిం": "గందరగోళం", "శ్బ్ద": "శబ్ద",
+  "బంధువపల": "బంధువుల", "బంధువపలంతా": "బంధువులంతా", "అరుపపలత": "అరుపులతో",
+  "పటలలల": "పిల్లల", "विపరీతమ": "విపరీతమైన", "విపరీతమ": "విపరీతమైన",
+  "ఉంట": "ఉంటుంది", "కవనీ": "కానీ", "రవతిా": "రాత్రి", "అయ్యయసరికి": "అయ్యేసరికి",
+  "ముగిస్ట": "ముగిసి", "వెళ్లులప్్": "వెళ్లిపోయాక", "వెళ్లలప్్": "వెళ్లిపోయాక",
+  "మاريప్్": "మاريపో", "కూమంలో": "క్రమంలో", "జరుగుతుని": "జరుగుతున్న",
+  "మారుు": "మార్పు", "సరిగవా": "సరిగ్గా", "ఆమ": "ఆ", "భూమిపెై": "భూమిపై",
+  "వేటలత": "వేటలు", "యుదాధ": "యుద్ధాలు", "చట్ి": "చెట్ల", "ఉరితాళ్లల": "ఉరితాళ్లు",
+  "అమిగడలా": "అమిగ్డలా", "రసవయనాల": "రసాయనాల", "ఆవేశ్వలత": "ఆవేశాలు",
+  "అంతిమ": "అంతిమ", "అิంతిమ": "అంతిమ", "నిశ్శబ్దిం": "నిశ్శబ్దం",
+  "ఆవిरవావంతో": "ఆవిర్భావంతో", "పావృతుు": "ప్రవృత్తుల", "అంతమ": "అంతమై",
+  "పరిపూరణమ": "పరిపూర్ణమైన", "వెైజఞా": "వైజ్ఞానిక", "చేరుకతంట": "చేరుకుంటుంది",
+  "గురుతావकरషణ": "గురుత్వాకర్షణ", "అప్వరమ": "అపారమైన", "సవరవతిాక": "సార్వత్రిక",
+  "పరామతో": "ప్రేమతో", "తీరుు": "తీర్పు", "రచయ్తగవ": "రచయితగా",
+  "సమాజఞనికి": "సమాజానికి", "అధ్వయయిం": "అధ్యాయం", "అధ్యాయం": "అధ్యాయం",
+  "పరిమితులు": "పరిమితులు", "మర్షయు": "మరియు", "అలాార్షథమిక్": "అల్గారిథమిక్",
+  "సవాళుల": "సవాళ్లు"
 };
 
-function smartUnicodeRepair(text) {
-  if (!text) return "";
-  text = text.normalize("NFC");
-  
-  // 1. తెలుగు పాత అंకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
-  text = text.replace(/[\u0C66-\u0C6F]/g, function(ch) {
-    return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
-  });
-
-  // 2. మొదట ముద్దగా మారిన దేవనాగరి మరియు తెలుగు అక్షరదోషాల పక్కా క్లీనింగ్
-  text = text.replace(/హెచ్చరిక\s*శీర్షిక/g, "హెచ్చరిక శీర్షిక");
-  text = text.replace(/అధ్వయయిం/g, "అధ్యాయం");
-  text = text.replace(/శీరిషిక/g, "శీర్షిక");
-  text = text.replace(/ముగషింపు/g, "ముగింపు");
-  text = text.replace(/శాసనిం/g, "శాసనం");
-  text = text.replace(/శూనయింలోని/g, "శూన్యంలోని");
-  text = text.replace(/వ్యтиర్ేక/g, "వ్యతిరేక");
-  text = text.replace(/వ్యతిర్ేక/g, "వ్యతిరేక");
-  text = text.replace(/గురుత్వాకరిణ/g, "గురుత్వాకర్షణ");
-  text = text.replace(/త్ో/g, "తో");
-  text = text.replace(/పరయాణవనిి/g, "ప్రయాణాన్ని");
-  text = text.replace(/పాయాణానిి/g, "ప్రయాణాన్ని");
-  text = text.replace(/విశ్ా/g, "విశ్వ");
-  text = text.replace(/ముగషించే/g, "ముగించే");
-  text = text.replace(/ముగशించే/g, "ముగించే");
-  text = text.replace(/పర్షణవమ/g, "పరిణామ");
-  text = text.replace(/ధరమిం/g, "ధర్మం");
-  text = text.replace(/ధరమశ్వసనం/g, "ధర్మశాసనం");
-  text = text.replace(/గందరగోళిం/g, "గందరగోళం");
-  text = text.replace(/గందరగోళ్ం/g, "గందరగోళం");
-  text = text.replace(/వెళ్లలప్్/g, "వెళ్లిపోయాక");
-  text = text.replace(/వెళ్లులప్్/g, "వెళ్లిపోయాక");
-  text = text.replace(/మారుు/g, "మార్పు");
-  text = text.replace(/ఊహ ంచుకతందాం/g, "ఊహించుకుందాం");
-  text = text.replace(/బిగ్ బ్యంగ్/g, "బిగ్ బ్యాంగ్");
-
-  // కొత్త అధ్యాయాల దోషాలు
-  text = text.replace(/కీనెలం/g, "కేవలం");
-  text = text.replace(/పరతీకతాల్రాలు/g, "ప్రతీకారాలు");
-  text = text.replace(/మర్షయు/g, "మరియు");
-  text = text.replace(/జంతు పరవృతుiల/g, "జంతు ప్రవృత్తుల");
-  text = text.replace(/జంతు పరవృతుిల/g, "జంతు ప్రవృత్తుల");
-  text = text.replace(/పోతేీమనిష్పన/g, "పోతే మనిషిని");
-  text = text.replace(/పోతేమనిష్పన/g, "పోతే మనిషిని");
-  text = text.replace(/ఉనికకేేత్యనసమాద్i/g, "ఉనికికే అత్యంత సమాధి");
-  text = text.replace(/తవపతకునే/g, "తప్పుకునే");
-  text = text.replace(/ఊండనే/g, "ఉందనే");
-  text = text.replace(/తాతివక హ చిరిక/g, "తాత్విక హెచ్చరిక");
-  text = text.replace(/కతళముందు/g, "కళ్లముందు");
-  text = text.replace(/రైతనాయవంతము/g, "చైతన్యవంతము");
-  text = text.replace(/స్టలకవని/g, "చిట్టచివరకు");
-  text = text.replace(/మేధసుస/g, "మేధస్సు");
-  text = text.replace(/ఎదుగుతునాi/g, "ఎదుగుతుందో");
-  text = text.replace(/ఎదుగుతునాి/g, "ఎదుగుతుందో");
-  text = text.replace(/కవరోర్ేట లాభల కోసం/g, "కార్పొరేట్ లాభాల కోసం");
-  text = text.replace(/మధ్యాయ/g, "మరియు");
-  text = text.replace(/యుదాధ ల/g, "యుద్ధాల");
-  text = text.replace(/వపడుకతంటోంది/g, "వాడుకుంటోంది");
-  text = text.replace(/వివేకవనిi/g, "వివేకాన్ని");
-  text = text.replace(/సంసకరణల/g, "సంస్కరణల");
-  text = text.replace(/సవధనంగవ/gu, "సాధనంగా");
-  text = text.replace(/మారికపోే తే/g, "మార్చుకోకపోతే");
-  text = text.replace(/ఉనాముదానిi/g, "ఉన్నదానిని");
-  text = text.replace(/తవపవకతనేలా/g, "తప్పుకోలేనంతగా");
-
-  // 3. చివరగా మిగిలిపోయిన దేవనాగరి/హిందీ అక్షరాల క్లీనప్
-  text = text.replace(/[\u0900-\u097F]/g, "");
-
-  return text;
-}
-
-window.processBookPublishing = function() {
+function processBookPublishing() {
   let rawInput = document.getElementById("rough").value;
   if (!rawInput) return;
 
-  let cleanedText = smartUnicodeRepair(rawInput);
-  let lines = cleanedText.split("\n");
-  
-  let finalMergedLines = [];
-  let buffer = "";
-
-  // 🌟 లూపింగ్ లాజిక్ పూర్తిగా బగ్స్ లేకుండా స్థిరపరచబడింది
-  for (let k = 0; k < lines.length; k++) {
-    let sLine = lines[k];
-    if (sLine === undefined || sLine === null) continue;
-    let t = sLine.trim();
-    if (!t) {
-      if (buffer) { finalMergedLines.push(buffer); buffer = ""; }
-      finalMergedLines.push(""); 
-      continue;
-    }
-
-    let isHeadingRow = /(అధ్యాయం|శీర్షిక|హెచ్చరిక)/i.test(t);
-    
-    if (isHeadingRow) {
-      if (buffer) { finalMergedLines.push(buffer); buffer = ""; }
-      finalMergedLines.push(t);
-    } else {
-      if (buffer) { buffer += " " + t; } else { buffer = t; }
-    }
-  }
-  if (buffer) { finalMergedLines.push(buffer); }
-
+  let lines = rawInput.split("\n");
   let htmlOutput = [];
   let rawTextOutput = [];
 
-  for (let m = 0; m < finalMergedLines.length; m++) {
-    let line = finalMergedLines[m];
-    if (!line) {
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    if (!line.trim()) {
       htmlOutput.push("<br>");
       rawTextOutput.push("");
       continue;
     }
 
-    let isMainChapter = /(అధ్యాయం)/i.test(line);
-    let isBookHeading = /(శీర్షిక|హెచ్చరిక)/i.test(line);
+    let words = line.split(/\s+/);
+    let processedWords = [];
 
-    let cleanLine = line.replace(/[ \t]+/g, " ");
-    cleanLine = cleanLine.replace(/శనికి\s*\(Reverse\)\s*Gravity/g, "శక్తి (Reverse Gravity)");
+    for (let j = 0; j < words.length; j++) {
+      let word = words[j];
+      if (!word) continue;
 
-    rawTextOutput.push(cleanLine);
+      let cleanWord = word.replace(/[.,!?()]/g, "");
+      let punctuationBefore = word.match(/^[(]*/) ? word.match(/^[(]*/) : "";
+      let punctuationAfter = word.match(/[.,!?)]*$/) ? word.match(/[.,!?)]*$/) : "";
 
-    if (isMainChapter) {
-      htmlOutput.push("<span class='main-chapter-style'>" + cleanLine + "</span>");
-    } else if (isBookHeading) {
-      htmlOutput.push("<span class='book-heading-style'>" + cleanLine + "</span>");
-    } else {
-      htmlOutput.push("<div class='book-paragraph'>" + cleanLine + "</div>");
+      if (spellingFixes[cleanWord]) {
+        cleanWord = spellingFixes[cleanWord];
+      }
+      processedWords.push(punctuationBefore + cleanWord + punctuationAfter);
     }
+
+    let cleanLine = processedWords.join(" ");
+    rawTextOutput.push(cleanLine);
+    htmlOutput.push("<div>" + cleanLine + "</div>");
   }
 
   document.getElementById("cleanContainer").innerHTML = htmlOutput.join("");
   document.getElementById("clean").value = rawTextOutput.join("\n");
-};
+}
 
-window.copyText = async function() {
+async function copyText() {
   const output = document.getElementById("clean");
   if (!output.value) return;
   await navigator.clipboard.writeText(output.value);
-  alert("ప్రచురణ నియమాల ప్రకారం టెక్స్ట్ విజయవంతంగా కాపీ అయింది! ఇప్పుడు వర్డ్ లో పేస్ట్ చేసుకోండి.");
-};
+  alert("టెక్స్ట్ విజయవంతంగా కాపీ అయింది!");
+}
 
-window.clearText = function() {
+function clearText() {
   document.getElementById("rough").value = "";
+  document.getElementById("cleanContainer").innerHTML = "సриదిద్దబడిన టెక్స్ట్ ఇక్కడ కనిపిస్తుంది...";
+  document.getElementById("clean").value = "";
+}
+</script>
+</body>
+</html>
