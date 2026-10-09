@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v15.5</title>
+<title>తెలుగు బుక్ పబ్లిషింగ్ లేఅవుట్ ఇంజన్ v16.0</title>
 <style>
   :root {
     --primary: #0f5132;
@@ -91,40 +91,37 @@
     padding: 35px;
     box-sizing: border-box;
     font-size: 19px;
-    line-height: 2.0;
+    line-height: 1.6;
     white-space: pre-wrap;
     overflow-y: auto;
   }
   
-  /* 🌟 ఇంటర్నేషనల్ బుక్ లేఅవుట్ ప్రమాణాలు: అధ్యాయం చాలా పెద్దది, శీర్షిక దానికంటే చిన్నది */
+  /* MS Word ప్రొటెక్షన్: ప్రింటింగ్ మరియు కాపీ కోసం పక్కా సైజ్ రూల్స్ */
   .main-chapter-style {
-    font-size: 36px !important;    /* అధ్యాయం చాలా పెద్దది */
+    font-size: 36px !important;
     font-weight: bold !important;
     color: var(--primary) !important;
-    text-align: center !important;  /* పేజీ మధ్యలోకి అమరిక */
-    margin-top: 35px !important;
-    margin-bottom: 15px !important;
+    text-align: center !important;
+    margin: 20px 0 !important;
     display: block !important;
   }
   .book-heading-style {
-    font-size: 26px !important;    /* శీర్షిక అధ్యాయం కంటే చిన్నది */
+    font-size: 26px !important;
     font-weight: bold !important;
     color: #198754 !important;
-    text-align: center !important;  /* పేజీ మధ్యలోకి అమరిక */
-    margin-top: 15px !important;
-    margin-bottom: 30px !important;
+    text-align: center !important;
+    margin: 15px 0 !important;
     display: block !important;
   }
   .sub-heading-style {
-    font-size: 20px !important;    /* ఉప శీర్షిక */
+    font-size: 20px !important;
     font-weight: bold !important;
     color: #343a40 !important;
-    margin-top: 20px !important;
-    margin-bottom: 12px !important;
+    margin: 12px 0 !important;
     display: block !important;
   }
   .book-paragraph {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
     text-align: justify;
     display: block;
   }
@@ -138,7 +135,7 @@
 <body>
 
 <header>
-  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v15.5</h1>
+  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v16.0</h1>
 </header>
 
 <div class="workspace">
@@ -156,7 +153,7 @@
 
   <div class="main-editor">
     <div class="editor-block">
-      <textarea id="rough" oninput="saveDraft()" placeholder="మీ కొత్త పుస్తకం టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి... (ఏ అధ్యాయం అయినా సరే వాడుకోవచ్చు)"></textarea>
+      <textarea id="rough" oninput="saveDraft()" placeholder="మీ పుస్తకం టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
     </div>
     <div class="editor-block">
       <div id="cleanContainer" class="premium-preview">అంతర్జాతీయ పీడీఎఫ్ బుక్ లేఅవుట్ ఇక్కడ ప్రత్యక్షమవుతుంది...</div>
@@ -173,29 +170,23 @@ window.onload = function() {
   if(saved) { document.getElementById("rough").value = saved; }
 };
 
-// సార్వత్రిక తెలుగు యూనికోడ్ క్యారెక్టర్ రిపేర్ ఇంజన్ (ఏ కంటెంట్ కైనా ఒత్తులు సెట్ చేస్తుంది)
-function universalUnicodeFix(text) {
+// 🌟 హిందీ/దేవనాగరి అక్షరాలను ముక్కలతో సహా పూర్తిగా తుడిచేసే మాస్టర్ ఇంజన్
+function cleanForeignCharacters(text) {
   if (!text) return "";
 
-  // 1. మన్యువల్ అలర్ట్ గుర్తులు తీసేయడం
   text = text.replace(/⚠️\[సరిచూసుకోండి\]/g, "");
 
-  // 2. తెలుగు పాత అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
-  text = text.replace(/[\u0C66-\u0C6F]/gu, function(ch) {
-    return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
-  });
+  // టెక్స్ట్‌లో అతుక్కుపోయిన ముద్ద పదాలను విడదీయడం
+  text = text.replace(/పరయాణవниిసూపర్/gu, "ప్రయాణాన్ని సూపర్");
+  text = text.replace(/పరయాణవనిిసూపర్/gu, "ప్రయాణాన్ని సూపర్");
+  text = text.replace(/వ్యтиర్ేక/gu, "వ్యతిరేక");
+  text = text.replace(/వ్యतिర్ేక/gu, "వ్యతిరేక");
+  text = text.replace(/గురుతావकरషణ/gu, "గురుత్వాకర్షణ");
 
-  // 3. సార్వత్రిక ఒత్తులు, దీర్ఘాలు, గుణింతాల క్రమ అమరిక (Universal Re-ordering)
-  text = text.replace(/ర\s*్\s*ే/gu, "్రే"); 
-  text = text.replace(/ర\s*్\s*ె/gu, "్రె"); 
-  text = text.replace(/ర\s*్\s*ా/gu, "్రా"); 
-  text = text.replace(/ర\s*్\s*ి/gu, "్రి"); 
-  text = text.replace(/త\s*ో\s*్/gu, "్తో"); 
-  text = text.replace(/్\s*ో/gu, "ో"); 
+  // దేవనాగరి/हिन्दी క్యారెక్టర్ రేంజ్ (\u0900-\u097F) ఎక్కడున్నా దాన్ని పూర్తిగా డిలీట్ చేస్తుంది
+  text = text.replace(/[\u0900-\u097F]/gu, "");
 
-  // 4. పీడీఎఫ్ కాపీ వల్ల వచ్చే కొన్ని కామన్ బ్రోకెన్ సిలబుల్స్ ని జత చేయడం
-  text = text.replace(/ఊహ\s+ంచుకతందాం/gu, "ఊహించుకుందాం");
-  text = text.replace(/ఉహ\s+ంచుకతందాం/gu, "ఊహించుకుんだాం");
+  // పాత కామన్ టైపోస్ రిపేర్
   text = text.replace(/ముగషింపు/gu, "ముగింపు");
   text = text.replace(/శాసనిం/gu, "శాసనం");
   text = text.replace(/శూనయింలోని/gu, "శూన్యంలోని");
@@ -204,12 +195,27 @@ function universalUnicodeFix(text) {
   text = text.replace(/అధ్వయయిం/gu, "అధ్యాయం");
   text = text.replace(/అధ్యాయం/gu, "అధ్యాయం");
   text = text.replace(/శీర్షిక/gu, "శీర్షిక");
+  text = text.replace(/గురుత్వాకరిణ/gu, "గురుత్వాకర్షణ");
+  text = text.replace(/త్ో/gu, "తో");
+  text = text.replace(/పరయాణవనిి/gu, "ప్రయాణాన్ని");
+  text = text.replace(/పాయాణానిి/gu, "ప్రయాణాన్ని");
+  text = text.replace(/విశ్ా/gu, "విశ్వ");
+  text = text.replace(/ముగషించే/gu, "ముగించే");
   text = text.replace(/పర్షణవమ/gu, "పరిణామ");
   text = text.replace(/ధరమిం/gu, "ధర్మం");
   text = text.replace(/ధరమశ్వసనం/gu, "ధర్మశాసనం");
   text = text.replace(/గందరగోళిం/gu, "గందరగోళం");
+  text = text.replace(/గందరగోళ్ం/gu, "గందరగోళం");
   text = text.replace(/వెళ్లలప్్/gu, "వెళ్లిపోయాక");
   text = text.replace(/మారుు/gu, "మార్పు");
+  text = text.replace(/ఊహ\s+ంచుకతందాం/gu, "ఊహించుకుందాం");
+  text = text.replace(/ఉహ\s+ంచుకతందాం/gu, "ఊహించుకుందాం");
+  text = text.replace(/బిగ్\s+బ్యంగ్/gu, "బిగ్ బ్యాంగ్");
+
+  // తెలుగు అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
+  text = text.replace(/[\u0C66-\u0C6F]/gu, function(ch) {
+    return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
+  });
 
   return text;
 }
@@ -218,10 +224,10 @@ function processBookPublishing() {
   let rawInput = document.getElementById("rough").value;
   if (!rawInput) return;
 
-  // రన్ యూనివర్సల్ ఇంజన్
-  let repairedText = universalUnicodeFix(rawInput);
+  // రన్ హిందీ క్లీనర్
+  let cleanedText = cleanForeignCharacters(rawInput);
 
-  let lines = repairedText.split("\n");
+  let lines = cleanedText.split("\n");
   let htmlOutput = [];
   let rawTextOutput = [];
 
@@ -233,16 +239,15 @@ function processBookPublishing() {
       continue;
     }
 
-    // 🌟 సార్వత్రిక శీర్షికల గుర్తింపు (ఇది ఏ చాప్టర్ నంబర్ కైనా ఆటోమేటిక్ గా మ్యాచ్ అవుతుంది)
+    // శీర్షికల గుర్తింపు
     let isMainChapter = /^(అధ్యాయం|అధ్వయయిం|Chapter)/i.test(trimmedLine);
     let isBookHeading = /^(శీర్షిక|శీరిషిక|Title)/i.test(trimmedLine);
     let isSubHeading = /^(ఉప శీర్షిక|ఉపశీర్షిక|సూపర్ ఏఐ|అంతిమ|ఆమ|Sub|Section)/i.test(trimmedLine);
 
-    // వాక్యం అస్సలు విరిగిపోకుండా స్పేసెస్ ని మాత్రం మేనేజ్ చేయడం
+    // 🌟 వర్డ్ డాక్యుమెంట్ ప్రొటెక్షన్: ఎక్స్‌ట్రా గ్యాప్స్ రాకుండా స్పేసెస్‌ను నీట్‌గా ఒకే లైన్ లోకి సర్దడం
     let cleanLine = trimmedLine.replace(/[ \t]+/g, " ");
     rawTextOutput.push(cleanLine);
 
-    // లేఅవుట్ అప్లికేషన్
     if (isMainChapter) {
       htmlOutput.push("<span class='main-chapter-style'>" + cleanLine + "</span>");
     } else if (isBookHeading) {
@@ -262,7 +267,7 @@ async function copyText() {
   const output = document.getElementById("clean");
   if (!output.value) return;
   await navigator.clipboard.writeText(output.value);
-  alert("టెక్స్ట్ విజయవంతంగా కాపీ అయింది!");
+  alert("టెక్స్ట్ విజయవంతంగా కాపీ అయింది! ఇప్పుడు మీరు వర్డ్ లో పేస్ట్ చేసుకోవచ్చు.");
 }
 
 function clearText() {
