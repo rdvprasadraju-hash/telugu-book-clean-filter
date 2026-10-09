@@ -16,26 +16,27 @@
 <body>
 
 <div class="box">
-  <h2 style="text-align:center; color:#0f5132; margin-top:0;">📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v95.0 (క్లౌడ్ డిక్షనరీ ఇంజన్)</h2>
-  <textarea id="in" placeholder="ఏఐ (AI) ఎన్ని తప్పులతో కంటెంట్ ఇచ్చినా సరే ఇక్కడ పేస్ట్ చేయండి... ఇది ఆటోమేటిక్‌గా గూగుల్ డిక్షనరీ శోధన ద్వారా ఒత్తులను సరిచేస్తుంది."></textarea>
+  <h2 style="text-align:center; color:#0f5132; margin-top:0;">📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v95.0</h2>
+  <textarea id="in" placeholder="ఏఐ (AI) ఎన్ని తప్పులతో కంటెంట్ ఇచ్చినా, ఎలాంటి తప్పులున్నా సరే ఇక్కడ పేస్ట్ చేయండి... ఇది డిక్షనరీ ఆధారంగా ఆటోమేటిక్‌గా ఒత్తులను సరిచేస్తుంది."></textarea>
   <button id="cleanBtn" onclick="universalClean()">✨ అన్ని తప్పులను ఒకేసారి సరిచేయి</button>
   <button style="background:#0d6efd;" onclick="navigator.clipboard.writeText(document.getElementById('out').innerText); alert('కాపీ అయింది!');">📋 కాపీ చేయి</button>
   <div id="out" class="output">సరిదిద్దబడిన ప్యూర్ తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
 <script>
-// 🔍 క్లౌడ్ డిక్షనరీ శోధన ఇంజన్ (Google Dictionary Lookup Engine)
-// ఇది ఏ పదాన్నైనా ఇంటర్నెట్ ద్వారా శోధించి సరైన ఒత్తుల పదాన్ని తిరిగి ఇస్తుంది.
-async function fetchCorrectWordFromCloud(word) {
+// 🌐 సార్వత్రిక డిక్షనరీ శోధన ఇంజన్ (గూగుల్ క్లౌడ్ నిఘంటువు ఆధారంగా)
+// ఇది ఏ పదాన్నైనా ఇంటర్నెట్ ద్వారా శోధించి, దానికి సరిపోయే సరైన ఒత్తుల పదాన్ని తెస్తుంది.
+async function getCorrectWordFromDictionary(word) {
   try {
-    // గూగుల్ ఇన్‌పుట్ టూల్స్ API ద్వారా డిక్షనరీ శోధన
     let url = `https://google.com{encodeURIComponent(word)}&itc=te-t-i0-und&num=1`;
     let response = await fetch(url);
     let data = await response.json();
     
-    if (data && data[0] === "SUCCESS" && data[1][0][1].length > 0) {
-      let suggestions = data[1][0][1];
-      return suggestions[0]; // గూగుల్ డిక్షనరీలో దొరికిన అత్యంత సరైన ఒత్తు పదం
+    if (data && data[0] === "SUCCESS" && data[1] && data[1][0] && data[1][0].maxLength > 0) {
+      let suggestions = data[1][0].suggestedWords;
+      if (suggestions && suggestions.length > 0) {
+        return suggestions[0]; // నిఘంటువులోని అత్యంత సరైన ఒత్తుల పదం
+      }
     }
     return word;
   } catch (e) {
@@ -50,20 +51,20 @@ async function universalClean() {
   let btn = document.getElementById("cleanBtn");
   let outputDiv = document.getElementById("out");
   
-  btn.innerText = "⏳ డిక్షనరీలో శోధిస్తోంది... దయచేసి ఆగండి...";
+  // యూజర్‌కు తెలియడం కోసం లోడింగ్ టెక్స్ట్
+  btn.innerText = "⏳ డిక్షనరీ ద్వారా ఒత్తులను సరిచేస్తోంది...";
   btn.disabled = true;
-  outputDiv.innerHTML = "<span class='loading'>క్లౌడ్ డిక్షనరీ సహాయంతో ఒత్తులను సరిచేస్తోంది...</span>";
 
-  // 🌟 1. తెలుగు టెక్స్ట్ బైట్స్ ఒకే సరళరేఖలోకి తీసుకురావడం
+  // 🌟 1. తెలుగు టెక్స్ట్ బైట్స్ ఒకే సరళరేఖలోకి తీసుకురావడం (మీ పాత కోడ్)
   let cleanText = text.normalize("NFC");
 
-  // 🌟 2. ఆటోమేటిక్ క్లీనర్: ఏఐ టెక్స్ట్ లో ఎక్కడైనా మిక్స్ అయిన రష్యన్/కిరిలిక్ అక్షరాలను వేరు చేస్తుంది
+  // 🌟 2. ఆటోమేటిక్ క్లీనర్: ఏఐ టెక్స్ట్ లో ఎక్కడైనా మిక్స్ అయిన రష్యన్/కిరిలిక్ అక్షరాలను వేరు చేస్తుంది (మీ పాత కోడ్)
   cleanText = cleanText.replace(/[\u0400-\u04FF]/g, ""); 
   
-  // 🌟 3. ఏఐ టెక్స్ట్ లో మిక్స్ అయిన దేవనాగరి/హిందీ ముక్కలను సమూలంగా తుడిచేస్తుంది
+  // 🌟 3. ఏఐ టెక్స్ట్ లో మిక్స్ అయిన దేవనాగరి/హిందీ ముక్కలను సమూలంగా తుడిచేస్తుంది (మీ పాత కోడ్)
   cleanText = cleanText.replace(/[\u0900-\u097F]/g, "");
 
-  // 🌟 4. విడిపోయిన ఒత్తులు మరియు గుణింతాలను ఆటోమేటిక్ గా ఒక అయస్కాంతంలా కనెక్ట్ చేసే యూనివర్సల్ ఇంజన్
+  // 🌟 4. విడిపోయిన ఒత్తులు మరియు గుణింతాలను ఆటోమేటిక్ గా ఒక అయస్కాంతంలా కనెక్ట్ చేసే యూనివర్సల్ ఇంజన్ (మీ పాత కోడ్)
   cleanText = cleanText.replace(/ర\s*్\s*ే/gu, "్రే"); 
   cleanText = cleanText.replace(/ర\s*్\s*్రా/gu, "్రా"); 
   cleanText = cleanText.replace(/ర\s*్\s*ా/gu, "్రా"); 
@@ -71,30 +72,31 @@ async function universalClean() {
   cleanText = cleanText.replace(/త\s*ో\s*్/gu, "్తో"); 
   cleanText = cleanText.replace(/్\s*ో/gu, "ో"); 
 
-  // 🌟 5. సాధారణ ఒసిఆర్ టైపోస్ (శీర్షికలు, అధ్యాయాల ముద్ద పదాల క్లీనప్)
+  // 🌟 5. సాధారణ ఒసిఆర్ టైపోస్ (శీర్షికలు, అధ్యాయాల ముద్ద పదాల క్లీనప్) (మీ పాత కోడ్)
   cleanText = cleanText.replace(/(అధ్వయయిం|అధ్యాయిం)/gu, "అధ్యాయం");
   cleanText = cleanText.replace(/(శీరిషిక|శీర్ిషక|సిర్శిక|శీర\s*్\s*і\s*ష\s*క)/gu, "శీర్షಿಕ");
   cleanText = cleanText.replace(/ఆఖర్షశాసనం/g, "ఆఖరి శాసనం");
   cleanText = cleanText.replace(/హెచిర్షక/g, "హెచ్చరిక");
 
-  // 🌟 6. 🌐 ఆటోమేటిక్ క్లౌడ్ సెర్చ్ ఇంజన్ లాజిక్ (ఏ రకమైన తప్పు పదానికైనా ఒత్తులు ఇస్తుంది)
+  // 🌟 6. 🔄 సార్వత్రిక నిఘంటువు ఆధారిత ఆటో-కరెక్షన్ లాజిక్ (ఎలాంటి తప్పు పదానికైనా)
+  // టెక్స్ట్‌ని పదాలు, గుర్తులుగా (స్పేస్, చుక్కలు, కామాలు) ముక్కలు చేస్తుంది
   let tokens = cleanText.split(/(\s+|[,.?!:;""'()\[\]{}])/);
   
   for (let i = 0; i < tokens.length; i++) {
     let word = tokens[i];
     let cleanWord = word.replace(/[,.?!:;""'()\[\]{}]/g, "").trim();
     
-    // ఒకవేళ పదం కేవలం తెలుగు టెక్స్ట్ అయి ఉంటే దాన్ని క్లౌడ్ డిక్షనరీలో వెతుకుతుంది
-    if (cleanWord.length > 0 && isNaN(cleanWord)) {
-      let correctedWord = await fetchCorrectWordFromCloud(cleanWord);
+    // పదం కేవలం తెలుగు అక్షరాలై ఉండి, నంబర్ కాకపోతే దాన్ని నిఘంటువు శోధన ద్వారా సరిచేస్తుంది
+    if (cleanWord.length > 0 && isNaN(cleanWord) && /[\u0C00-\u0C7F]/.test(cleanWord)) {
+      let correctedWord = await getCorrectWordFromDictionary(cleanWord);
       tokens[i] = word.replace(cleanWord, correctedWord);
     }
   }
 
-  // ఫైనల్ కరెక్ట్ అయిన టెక్స్ట్‌ను స్క్రీన్‌పై చూపిస్తుంది
+  // సరిదిద్దబడిన పూర్తి శుద్ధమైన టెక్స్ట్‌ను ఔట్‌పుట్‌లో చూపిస్తుంది
   outputDiv.innerText = tokens.join("");
   
-  // బటన్‌ను నార్మల్ స్థితికి తెస్తుంది
+  // బటన్‌ను తిరిగి సాధారణ స్థితికి మారుస్తుంది
   btn.innerText = "✨ అన్ని తప్పులను ఒకేసారి సరిచేయి";
   btn.disabled = false;
 }
