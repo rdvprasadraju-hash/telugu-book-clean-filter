@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v34.0</title>
+<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v35.0</title>
 <style>
   :root {
     --primary: #0f5132;
@@ -57,7 +57,7 @@
 <body>
 
 <header>
-  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v34.0</h1>
+  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v35.0</h1>
 </header>
 
 <div class="workspace">
@@ -92,23 +92,20 @@ window.onload = function() {
   if(saved) { document.getElementById("rough").value = saved; }
 };
 
-function processBookPublishing() {
-  let rawInput = document.getElementById("rough").value;
-  if (!rawInput) return;
-
-  // 1. హెచ్చరిక మార్కులను, ఇతర పాత అనవసర గుర్తులను క్లీన్ చేయడం
-  rawInput = rawInput.replace(/⚠️\[సరిచూసుకోండి\]/g, "");
-  rawInput = rawInput.normalize("NFC");
+function smartUnicodeRepair(text) {
+  if (!text) return "";
+  text = text.replace(/⚠️\[సరిచూసుకోండి\]/g, "");
+  text = text.normalize("NFC");
   
-  // 2. హిందీ/దేవనాగరి అక్షరాలను ముక్కలతో సహా సమూలంగా తొలగించడం
-  rawInput = rawInput.replace(/[\u0900-\u097F]/g, "");
+  // 1. హిందీ/దేవనాగరి అక్షరాలను ముక్కలతో సహా సమూలంగా తొలగించడం
+  text = text.replace(/[\u0900-\u097F]/g, "");
 
-  // 3. పాత తెలుగు అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
-  rawInput = rawInput.replace(/[\u0C66-\u0C6F]/g, function(ch) {
+  // 2. పాత తెలుగు అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
+  text = text.replace(/[\u0C66-\u0C6F]/g, function(ch) {
     return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
   });
 
-  // 4. సార్వత్రిక తెలుగు స్పెల్లింగ్ మరియు ఒత్తుల సవరణ నిఘంటువు
+  // 3. సార్వత్రిక తెలుగు స్పెల్లింగ్ మరియు ఒత్తుల సవరణ నిఘంటువు
   let replacements = [
     { from: "హెచ్చరిక శీర్షిక", to: "హెచ్చరిక శీర్షిక" },
     { from: "అధ్వయయిం", to: "అధ్యాయం" },
@@ -135,16 +132,15 @@ function processBookPublishing() {
     { from: "మారుు", to: "మార్పు" },
     { from: "ఊహ ంచుకతందాం", to: "ఊహించుకుందాం" },
     { from: "బిగ్ బ్యంగ్", to: "బిగ్ బ్యాంగ్" },
+    { from: "キーనెలం", to: "కేవలం" },
     { from: "కీనెలం", to: "కేవలం" },
     { from: "పరతీకతాల్రాలు", to: "ప్రతీకారాలు" },
-    { from: "మర్షయు", to: "మриయు" },
     { from: "మర్షయు", to: "మరియు" },
     { from: "జంతు పరవృతుiల", to: "జంతు ప్రవృత్తుల" },
     { from: "జంతు పరవృతుిల", to: "జంతు ప్రవృత్తుల" },
     { from: "పోతేీమనిష్పన", to: "పోతే మనిషిని" },
     { from: "పోతేమనిష్పన", to: "పోతే మనిషిని" },
-    { from: "ఉనికకేేత్యనసമാద్i", to: "ఉనికికే అత్యంత సమాధి" },
-    { from: "ఉనికకేేత్యనసമാద్i", to: "ఉనికికే అత్యంత సమాధి" },
+    { from: "ఉనికకేేత్యనసమాద్i", to: "ఉనికికే అత్యంత సమాధి" },
     { from: "తవపతకునే", to: "తప్పుకునే" },
     { from: "ఊండనే", to: "ఉందనే" },
     { from: "తాతివక హ చిరిక", to: "తాత్విక హెచ్చరిక" },
@@ -154,7 +150,7 @@ function processBookPublishing() {
     { from: "మేధసుస", to: "మేధస్సు" },
     { from: "ఎదుగుతునాi", to: "ఎదుగుతుందో" },
     { from: "ఎదుగుతునాి", to: "ఎదుగుతుందో" },
-    { from: "రుiంకోవడానికి", to: "రుద్దడానికి" },
+    { from: "रुiంకోవడానికి", to: "రుద్దడానికి" },
     { from: "కవరోర్ేట లాభల కోసం", to: "కార్పొరేట్ లాభాల కోసం" },
     { from: "మధ్యాయ", to: "మరియు" },
     { from: "యుదాధ ల", to: "యుద్ధాల" },
@@ -165,11 +161,10 @@ function processBookPublishing() {
     { from: "మారికపోే తే", to: "మార్చుకోకపోతే" },
     { from: "ఉనాముదానిi", to: "ఉన్నదానిని" },
     { from: "తవపవకతనేలా", to: "తప్పుకోలేనంతగా" },
-    { from: "స్పృత్కరిను", to: "స్పృశించబోయే" },
+    { from: "స్పృత్కరిను", to: "స్పృशించబోయే" },
     { from: "మీంగేయబోతుని", to: "మింగేయబోతున్న" },
     { from: "మనిష్PFC", to: "మనిషి PFC" },
     { from: "స్పష్టో", to: "స్పష్టమైన" },
-    { from: "మశ్పిమగం", to: "ಮುఖ్యంగా" },
     { from: "లోంటిమానవ్", to: "లాంటి మానవ" },
     { from: "అమిగడలాక్ో", to: "అమిగ్డలా క్రో" },
     { from: "చవర్గతరక", to: "చర్చించబోయే" },
@@ -184,7 +179,6 @@ function processBookPublishing() {
     { from: "సజీవంగా", to: "సజీవంగా" },
     { from: "ఆవేశ్కందామైన", to: "ఆవేశపూరితమైన" },
     { from: "మళ్ీ", to: "మళ్లీ" },
-    { from: "అпуగిను", to: "అదుపును" },
     { from: "నోడు", to: "చూడు" },
     { from: "సృష్పకరును", to: "సృష్టికర్తను" },
     { from: "రవక్షసుడు", to: "రాక్షసుడు" },
@@ -195,6 +189,7 @@ function processBookPublishing() {
     { from: "స్మీనాయనికి", to: "సైన్యానికి" },
     { from: "పొదాన", to: "ప్రధాన" },
     { from: "కంటోోల్", to: "కంట్రోల్" },
+    { from: "కంటోోల్", to: "కంట్రోల్" },
     { from: "కరడుగటిన", to: "కరడుగట్టిన" },
     { from: "కరూరమైన", to: "క్రూరమైన" },
     { from: "వీధిరలేడి", to: "వీధి రౌడీల" },
@@ -203,25 +198,39 @@ function processBookPublishing() {
     { from: "తీరకోవడానికి", to: "తీర్చుకోవడానికి" },
     { from: "మొదలెతపెటేి", to: "మొదలుపెట్టేసాడు" },
     { from: "సవమకేతికత", to: "సాంకేతికత" },
-    { from: "అజేయమ", to: "అజేయమైన" },
-    { from: "శ్కిుతో", to: "శక్తితో" }
+    { from: "అజేయమ", to: "అజేయమైన" }
   ];
 
   for (let j = 0; j < replacements.length; j++) {
     let fromStr = replacements[j].from;
     let toStr = replacements[j].to;
-    rawInput = rawInput.split(fromStr).join(toStr);
+    text = text.split(fromStr).join(toStr);
   }
 
-  // 5. పారాగ్రాఫ్ ప్రొటెక్షన్: ఒక అధ్యాయం లేదా శీర్షిక కింద ఉండే మ్యాటర్ మొత్తం కంటిన్యూగా కలపడం
-  let lines = rawInput.split("\n");
+  return text;
+}
+
+function processBookPublishing() {
+  let rawInput = document.getElementById("rough").value;
+  if (!rawInput) return;
+
+  let cleanedText = smartUnicodeRepair(rawInput);
+  let lines = cleanedText.split("\n");
+  
   let finalMergedLines = [];
   let buffer = "";
 
-  for (let k = 0; j < lines.length; k++) {
+  // 🌟 191వ లైన్ బగ్ ఫిక్స్: ఇక్కడ 'j' కి బదులు 'k' లూప్ కరెక్ట్ గా మార్చబడింది
+  for (let k = 0; k < lines.length; k++) {
     let sLine = lines[k];
     if (sLine === undefined) break;
     let t = sLine.trim();
     if (!t) {
       if (buffer) { finalMergedLines.push(buffer); buffer = ""; }
       finalMergedLines.push(""); 
+      continue;
+    }
+
+    let isHeadingRow = /(అధ్యాయం|శీర్షిక|హెచ్చరిక)/i.test(t);
+    
+    if (isHeadingRow) {
