@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>తెలుగు బుక్ క్లీన్ ఫిల్టర్</title>
+<style>
+body {
+  font-family: sans-serif;
+  padding: 15px;
+  max-width: 800px;
+  margin: auto;
+  line-height: 1.6;
+}
+textarea {
+  width: 100%;
+  height: 200px;
+  box-sizing: border-box;
+  padding: 12px;
+  font-size: 16px;
+  margin: 8px 0;
+}
+button {
+  padding: 12px;
+  margin: 5px 3px;
+  font-size: 15px;
+}
+</style>
+</head>
+<body>
+
+<h2>తెలుగు బుక్ క్లీన్ ఫిల్టర్</h2>
+
+<p>మీ పుస్తకంలోని టెక్స్ట్‌ను ఇక్కడ శుభ్రం చేసుకోండి.</p>
+
+<label>రఫ్ టెక్స్ట్</label>
+<textarea id="rough" placeholder="మీ టెక్స్ట్ ఇక్కడ పేస్ట్ చేయండి"></textarea>
+
+<button onclick="cleanText()">క్లీన్ చేయి</button>
+<button onclick="copyText()">క్లీన్ టెక్స్ట్ కాపీ చేయి</button>
+<button onclick="clearText()">క్లియర్</button>
+
+<label>శుభ్రం చేసిన టెక్స్ట్</label>
+<textarea id="clean" placeholder="శుభ్రం చేసిన టెక్స్ట్ ఇక్కడ కనిపిస్తుంది"></textarea>
+
+<script>
+function cleanText() {
+  const input = document.getElementById("rough").value;
+
+  const words = input.split(/\s+/);
+  const result = [];
+
+  for (let word of words) {
+    if (!word) continue;
+
+    // ఇతర భాషల అక్షరాలు లేదా English అక్షరాలు ఉంటే
+    // ఆ పదాన్ని పూర్తిగా తొలగించు
+    const hasForeignLetter = [...word].some(ch =>
+      /\p{L}/u.test(ch) && !/[\u0C00-\u0C7F]/u.test(ch)
+    );
+
+    if (hasForeignLetter) continue;
+
+    // ఫార్ములా లేదా సమీకరణ గుర్తులు ఉన్న పదాన్ని తొలగించు
+    if (/[=+×÷^<>∑√∫≈≠±%]/u.test(word)) continue;
+
+    // తెలుగు అక్షరాలు, English అంకెలు, ఖాళీలు మాత్రమే ఉంచు
+    word = word.replace(/[^\u0C00-\u0C7F0-9]/gu, "");
+
+    if (word) result.push(word);
+  }
+
+  document.getElementById("clean").value = result.join(" ");
+}
+
+async function copyText() {
+  const output = document.getElementById("clean");
+
+  if (!output.value) {
+    alert("ముందుగా CLEAN నొక్కండి.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(output.value);
+    alert("టెక్స్ట్ కాపీ అయింది.");
+  } catch (e) {
+    output.focus();
+    output.select();
+    alert("టెక్స్ట్ సెలెక్ట్ అయింది. Copy ఎంచుకోండి.");
+  }
+}
+
+function clearText() {
+  document.getElementById("rough").value = "";
+  document.getElementById("clean").value = "";
+}
+</script>
+
+</body>
+</html>
