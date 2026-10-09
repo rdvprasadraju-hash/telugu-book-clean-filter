@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v33.0</title>
+<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v34.0</title>
 <style>
   :root {
     --primary: #0f5132;
@@ -42,7 +42,7 @@
     padding: 35px; box-sizing: border-box; font-size: 19px; line-height: 2.0; white-space: pre-wrap; overflow-y: auto;
   }
   
-  /* అంతర్జాతీయ బుక్ ప్రచురణ ప్రమాణాలు */
+  /* అంతర్జాతీయ బుక్ ప్రచురణ లేఅవుట్ ప్రమాణాలు */
   .main-chapter-style { font-size: 36px !important; font-weight: bold !important; color: #0f5132 !important; text-align: center !important; margin: 30px 0 15px 0 !important; display: block !important; line-height: 1.3 !important; }
   .book-heading-style { font-size: 26px !important; font-weight: bold !important; color: #198754 !important; text-align: center !important; margin: 20px 0 !important; display: block !important; line-height: 1.4 !important; }
   .sub-heading-style { font-size: 22px !important; font-weight: bold !important; color: #343a40 !important; margin: 15px 0 !important; display: block !important; }
@@ -57,7 +57,7 @@
 <body>
 
 <header>
-  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v33.0</h1>
+  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v34.0</h1>
 </header>
 
 <div class="workspace">
@@ -96,17 +96,19 @@ function processBookPublishing() {
   let rawInput = document.getElementById("rough").value;
   if (!rawInput) return;
 
-  // 1. హెచ్చరిక మార్కులు, వింత క్యారెక్టర్లను ఒకేసారి క్లీన్ చేయడం
+  // 1. హెచ్చరిక మార్కులను, ఇతర పాత అనవసర గుర్తులను క్లీన్ చేయడం
   rawInput = rawInput.replace(/⚠️\[సరిచూసుకోండి\]/g, "");
   rawInput = rawInput.normalize("NFC");
-  rawInput = rawInput.replace(/[\u0900-\u097F]/g, ""); // హిందీ అక్షరాలు పూర్తిగా అవుట్
+  
+  // 2. హిందీ/దేవనాగరి అక్షరాలను ముక్కలతో సహా సమూలంగా తొలగించడం
+  rawInput = rawInput.replace(/[\u0900-\u097F]/g, "");
 
-  // 2. తెలుగు అంకెలను మార్చడం
+  // 3. పాత తెలుగు అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
   rawInput = rawInput.replace(/[\u0C66-\u0C6F]/g, function(ch) {
     return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
   });
 
-  // 3. కరెక్ట్ పదాల మార్పిడి నిఘంటువు (సురక్షితమైన సరళమైన రీప్లేస్)
+  // 4. సార్వత్రిక తెలుగు స్పెల్లింగ్ మరియు ఒత్తుల సవరణ నిఘంటువు
   let replacements = [
     { from: "హెచ్చరిక శీర్షిక", to: "హెచ్చరిక శీర్షిక" },
     { from: "అధ్వయయిం", to: "అధ్యాయం" },
@@ -114,6 +116,7 @@ function processBookPublishing() {
     { from: "ముగషింపు", to: "ముగింపు" },
     { from: "శాసనిం", to: "శాసనం" },
     { from: "శూనయింలోని", to: "శూన్యంలోని" },
+    { from: "వ్యтиర్ేక", to: "వ్యతిరేక" },
     { from: "వ్యతిర్ేక", to: "వ్యతిరేక" },
     { from: "గురుత్వాకరిణ", to: "గురుత్వాకర్షణ" },
     { from: "త్ో", to: "తో" },
@@ -121,101 +124,104 @@ function processBookPublishing() {
     { from: "పాయాణానిి", to: "ప్రయాణాన్ని" },
     { from: "విశ్ా", to: "విశ్వ" },
     { from: "ముగషించే", to: "ముగించే" },
+    { from: "ముగशించే", to: "ముగించే" },
     { from: "పర్షణవమ", to: "పరిణామ" },
     { from: "ధరమిం", to: "ధర్మం" },
     { from: "ధరమశ్వసనం", to: "ధర్మశాసనం" },
     { from: "గందరగోళిం", to: "గందరగోళం" },
+    { from: "గందరగోళ్ం", to: "గందరగోళం" },
     { from: "వెళ్లలప్్", to: "వెళ్లిపోయాక" },
+    { from: "వెళ్లులప్్", to: "వెళ్లిపోయాక" },
     { from: "మారుు", to: "మార్పు" },
     { from: "ఊహ ంచుకతందాం", to: "ఊహించుకుందాం" },
     { from: "బిగ్ బ్యంగ్", to: "బిగ్ బ్యాంగ్" },
     { from: "కీనెలం", to: "కేవలం" },
     { from: "పరతీకతాల్రాలు", to: "ప్రతీకారాలు" },
+    { from: "మర్షయు", to: "మриయు" },
     { from: "మర్షయు", to: "మరియు" },
-    { from: "జंతు పరవృతుిల", to: "జంతు ప్రవృత్తుల" },
+    { from: "జంతు పరవృతుiల", to: "జంతు ప్రవృత్తుల" },
+    { from: "జంతు పరవృతుిల", to: "జంతు ప్రవృత్తుల" },
     { from: "పోతేీమనిష్పన", to: "పోతే మనిషిని" },
+    { from: "పోతేమనిష్పన", to: "పోతే మనిషిని" },
+    { from: "ఉనికకేేత్యనసമാద్i", to: "ఉనికికే అత్యంత సమాధి" },
+    { from: "ఉనికకేేత్యనసമാద్i", to: "ఉనికికే అత్యంత సమాధి" },
     { from: "తవపతకునే", to: "తప్పుకునే" },
+    { from: "ఊండనే", to: "ఉందనే" },
+    { from: "తాతివక హ చిరిక", to: "తాత్విక హెచ్చరిక" },
     { from: "కతళముందు", to: "కళ్లముందు" },
     { from: "రైతనాయవంతము", to: "చైతన్యవంతము" },
     { from: "స్టలకవని", to: "చిట్టచివరకు" },
     { from: "మేధసుస", to: "మేధస్సు" },
+    { from: "ఎదుగుతునాi", to: "ఎదుగుతుందో" },
     { from: "ఎదుగుతునాి", to: "ఎదుగుతుందో" },
+    { from: "రుiంకోవడానికి", to: "రుద్దడానికి" },
+    { from: "కవరోర్ేట లాభల కోసం", to: "కార్పొరేట్ లాభాల కోసం" },
+    { from: "మధ్యాయ", to: "మరియు" },
     { from: "యుదాధ ల", to: "యుద్ధాల" },
+    { from: "వపడుకతంటోంది", to: "వాడుకుంటోంది" },
+    { from: "వివేకవనిి", to: "వివేకాన్ని" },
     { from: "సంసకరణల", to: "సంస్కరణల" },
-    { from: "సవధనంగవ", to: "సాధనంగా" }
+    { from: "సవధనంగవ", to: "సాధనంగా" },
+    { from: "మారికపోే తే", to: "మార్చుకోకపోతే" },
+    { from: "ఉనాముదానిi", to: "ఉన్నదానిని" },
+    { from: "తవపవకతనేలా", to: "తప్పుకోలేనంతగా" },
+    { from: "స్పృత్కరిను", to: "స్పృశించబోయే" },
+    { from: "మీంగేయబోతుని", to: "మింగేయబోతున్న" },
+    { from: "మనిష్PFC", to: "మనిషి PFC" },
+    { from: "స్పష్టో", to: "స్పష్టమైన" },
+    { from: "మశ్పిమగం", to: "ಮುఖ్యంగా" },
+    { from: "లోంటిమానవ్", to: "లాంటి మానవ" },
+    { from: "అమిగడలాక్ో", to: "అమిగ్డలా క్రో" },
+    { from: "చవర్గతరక", to: "చర్చించబోయే" },
+    { from: "నిోల", to: "నిర్మూలించడానికి" },
+    { from: "విదుయత్", to: "విద్యుత్" },
+    { from: "రూపాయంతరం", to: "రూపాంతరం" },
+    { from: "చతందాం", to: "చూద్దాం" },
+    { from: "చిట్టచవరకు", to: "చిట్టచివరకు" },
+    { from: "సంచలనమ", to: "సంచలనమైన" },
+    { from: "వైజఞానికచ", to: "వైజ్ఞానిక చైతన్య" },
+    { from: "చాిత్రక", to: "చారిత్రక" },
+    { from: "సజీవంగా", to: "సజీవంగా" },
+    { from: "ఆవేశ్కందామైన", to: "ఆవేశపూరితమైన" },
+    { from: "మళ్ీ", to: "మళ్లీ" },
+    { from: "అпуగిను", to: "అదుపును" },
+    { from: "నోడు", to: "చూడు" },
+    { from: "సృష్పకరును", to: "సృష్టికర్తను" },
+    { from: "రవక్షసుడు", to: "రాక్షసుడు" },
+    { from: "మీంగేయబోతుని", to: "మింగేయబోతున్న" },
+    { from: "చనినితయజీవిత", to: "చిన్న నిత్యజీవిత" },
+    { from: "రవత్ోంబగళ్శ", to: "రాత్రింబగళ్లు" },
+    { from: "శీమించిన", to: "శ్రమించిన" },
+    { from: "స్మీనాయనికి", to: "సైన్యానికి" },
+    { from: "పొదాన", to: "ప్రధాన" },
+    { from: "కంటోోల్", to: "కంట్రోల్" },
+    { from: "కరడుగటిన", to: "కరడుగట్టిన" },
+    { from: "కరూరమైన", to: "క్రూరమైన" },
+    { from: "వీధిరలేడి", to: "వీధి రౌడీల" },
+    { from: "పేటేీశ్వరు", to: "పెట్టేసారు" },
+    { from: "విలతవ", to: "విలువ" },
+    { from: "తీరకోవడానికి", to: "తీర్చుకోవడానికి" },
+    { from: "మొదలెతపెటేి", to: "మొదలుపెట్టేసాడు" },
+    { from: "సవమకేతికత", to: "సాంకేతికత" },
+    { from: "అజేయమ", to: "అజేయమైన" },
+    { from: "శ్కిుతో", to: "శక్తితో" }
   ];
 
-  for (let rep of replacements) {
-    let regex = new RegExp(rep.from, "g");
-    rawInput = rawInput.replace(regex, rep.to);
+  for (let j = 0; j < replacements.length; j++) {
+    let fromStr = replacements[j].from;
+    let toStr = replacements[j].to;
+    rawInput = rawInput.split(fromStr).join(toStr);
   }
 
-  // 4. పారాగ్రాఫ్ ప్రొటెక్షన్: ఒక అధ్యాయం లేదా శీర్షిక కింద ఉండే మ్యాటర్ మొత్తం కంటిన్యూగా కలపడం
+  // 5. పారాగ్రాఫ్ ప్రొటెక్షన్: ఒక అధ్యాయం లేదా శీర్షిక కింద ఉండే మ్యాటర్ మొత్తం కంటిన్యూగా కలపడం
   let lines = rawInput.split("\n");
   let finalMergedLines = [];
   let buffer = "";
 
-  for (let sLine of lines) {
+  for (let k = 0; j < lines.length; k++) {
+    let sLine = lines[k];
+    if (sLine === undefined) break;
     let t = sLine.trim();
     if (!t) {
       if (buffer) { finalMergedLines.push(buffer); buffer = ""; }
       finalMergedLines.push(""); 
-      continue;
-    }
-
-    let isHeadingRow = /(అధ్యాయం|శీర్షిక|హెచ్చరిక)/i.test(t);
-    
-    if (isHeadingRow) {
-      if (buffer) { finalMergedLines.push(buffer); buffer = ""; }
-      finalMergedLines.push(t);
-    } else {
-      if (buffer) { buffer += " " + t; } else { buffer = t; }
-    }
-  }
-  if (buffer) { finalMergedLines.push(buffer); }
-
-  let htmlOutput = [];
-  let rawTextOutput = [];
-
-  for (let line of finalMergedLines) {
-    if (!line) {
-      htmlOutput.push("<br>");
-      rawTextOutput.push("");
-      continue;
-    }
-
-    let isMainChapter = /(అధ్యాయం)/i.test(line);
-    let isBookHeading = /(శీర్షిక|హెచ్చరిక)/i.test(line);
-
-    let cleanLine = line.replace(/[ \t]+/g, " ");
-    rawTextOutput.push(cleanLine);
-
-    if (isMainChapter) {
-      htmlOutput.push("<span class='main-chapter-style'>" + cleanLine + "</span>");
-    } else if (isBookHeading) {
-      htmlOutput.push("<span class='book-heading-style'>" + cleanLine + "</span>");
-    } else {
-      htmlOutput.push("<div class='book-paragraph'>" + cleanLine + "</div>");
-    }
-  }
-
-  document.getElementById("cleanContainer").innerHTML = htmlOutput.join("");
-  document.getElementById("clean").value = rawTextOutput.join("\n");
-}
-
-async function copyText() {
-  const output = document.getElementById("clean");
-  if (!output.value) return;
-  await navigator.clipboard.writeText(output.value);
-  alert("టెక్స్ట్ కాపీ అయింది! ఇప్పుడు వర్డ్ లో పేస్ట్ చేసుకోండి.");
-}
-
-function clearText() {
-  document.getElementById("rough").value = "";
-  document.getElementById("cleanContainer").innerHTML = "పీడీఎఫ్ తరహా అంతర్జాతీయ లేఅవుట్ ఇక్కడ ప్రత్యక్షమవుతుంది...";
-  document.getElementById("clean").value = "";
-  localStorage.removeItem("rough_draft");
-}
-</script>
-</body>
-</html>
