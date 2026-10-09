@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v56.0</title>
+<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v70.0</title>
 <style>
   :root {
     --primary: #0f5132;
@@ -42,7 +42,7 @@
     padding: 35px; box-sizing: border-box; font-size: 19px; line-height: 2.0; white-space: pre-wrap; overflow-y: auto;
   }
   
-  /* 🌟 అంతర్జాతీయ బుక్ ప్రచురణ లేఅవుట్ ప్రమాణాలు (36px & 26px Center Lock) */
+  /* అంతర్జాతీయ బుక్ ప్రచురణ లేఅవుట్ ప్రమాణాలు (36px & 26px Center Lock) */
   .main-chapter-style { font-size: 36px !important; font-weight: bold !important; color: #0f5132 !important; text-align: center !important; margin: 30px 0 15px 0 !important; display: block !important; line-height: 1.3 !important; }
   .book-heading-style { font-size: 26px !important; font-weight: bold !important; color: #198754 !important; text-align: center !important; margin: 20px 0 !important; display: block !important; line-height: 1.4 !important; }
   .book-paragraph { margin-bottom: 18px; text-align: justify; display: block; line-height: 1.8; }
@@ -51,7 +51,7 @@
 <body>
 
 <header>
-  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v56.0</h1>
+  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v70.0</h1>
 </header>
 
 <div class="workspace">
@@ -90,58 +90,58 @@ function smartUnicodeRepair(text) {
   if (!text) return "";
   let repairedText = text.normalize("NFC");
   
-  // 1. పాత తెలుగు అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
+  // 1. తెలుగు పాత అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
   repairedText = repairedText.replace(/[\u0C66-\u0C6F]/g, function(ch) {
     return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
   });
 
-  // 2. 🌟 స్ట్రాంగ్ క్యారెక్టర్ బైట్ ఫిక్సర్ (Wipes Hidden Russian/Cyrillic Mixed Codes)
-  repairedText = repairedText.replace(/మ\s*రి\s*[\u0438и]\s*య\s*ు/gu, "మరియు");
-  repairedText = repairedText.replace(/మ\s*[\u0440р]\s*[\u0438и]\s*య\s*ు/gu, "మరియు");
+  // 2. విదేశీ కిరిలిక్/రష్యన్ అక్షరాల సార్వత్రిక శుద్ధి (v70.0 Engine)
+  repairedText = repairedText.replace(/మ\s*р\s*и\s*య\s*ు/gu, "మరియు");
+  repairedText = repairedText.replace(/మ\s*రి\s*и\s*య\s*ు/gu, "మరియు");
   repairedText = repairedText.replace(/మриయు/gu, "మరియు");
   repairedText = repairedText.replace(/మరిиయు/gu, "మరియు");
+  repairedText = repairedText.replace(/వ్యтиర్ేక/gu, "వ్యతిరేక");
+  repairedText = repairedText.replace(/వ్యతిర్ేక/gu, "వ్యతిరేక");
+  repairedText = repairedText.replace(/స్ట\s*థ\s*ти\s*లో/gu, "స్థితిలో");
+  repairedText = repairedText.replace(/ని\s*ర్\s*о\s*ల/gu, "నిర్మూలించడానికి");
+  repairedText = repairedText.replace(/కంటోో\s*л/gu, "కంట్రోల్");
+  repairedText = repairedText.replace(/అ\s*п\s*ు\s*గి\s*н\s*ు/gu, "అదుపును");
   repairedText = repairedText.replace(/వివేకిం/gu, "వివేకం");
   repairedText = repairedText.replace(/నియింతరణ/gu, "నియంత్రణ");
 
   // 3. శీర్షిక మరియు అధ్యాయం పక్కా స్పెల్లింగ్ లాక్
   repairedText = repairedText.replace(/(అధ్వయయిం|అధ్యాయం|అధ్యాయిం)/gu, "అధ్యాయం");
-  repairedText = repairedText.replace(/(శీరిషిక|శీర్ิషక|సిర్శిక|శీర్షిక|శ్\s*ీ\s*ర్\s*ి\s*ష\s*క)/gu, "శీర్షిక");
+  repairedText = repairedText.replace(/(శీరిషిక|శీర్ิషక|సిర్శిక|శీర్షిక|శ్\s*ీ\s*ర్\s*і\s*ష\s*క)/gu, "శీర్షిక");
   repairedText = repairedText.replace(/హెచ్చరిక\s*శీర్షిక/gu, "హెచ్చరిక శీర్షిక");
 
-  // 4. విరిగిపోయిన ఒత్తులు & గుణింతాల బైట్ కరెక్ట్ అమరిక
-  repairedText = repairedText.replace(/ర\s*్\s*ే/gu, "時から"); // పాత జపనీస్ బగ్ తీసివేత
-  repairedText = repairedText.replace(/ర\s*్\s*ే/gu, " Restoration ");
+  // 4. తెలుగు ఒత్తులు మరియు గుణింతాల స్థిర అమరిక
   repairedText = repairedText.replace(/ర\s*్\s*ే/gu, "్రే"); 
   repairedText = repairedText.replace(/ర\s*్\s*్రా/gu, "్రా"); 
   repairedText = repairedText.replace(/ర\s*్\s*ా/gu, "్రా"); 
-  repairedText = repairedText.replace(/ర\s*్\s*i/gu, "్రి"); 
   repairedText = repairedText.replace(/ర\s*్\s*ి/gu, "్రి"); 
   repairedText = repairedText.replace(/త\s*ో\s*్/gu, "్తో"); 
   repairedText = repairedText.replace(/్\s*ో/gu, "ో"); 
 
-  // 5. గ్లోబల్ టెక్స్ట్ క్లీనింగ్ మ్యాపింగ్
+  // 5. సార్వత్రిక తెలుగు అక్షరదోషాల నిఘంటువు (v70.0 Cleaned Array)
   let replacements = [
     { from: "ఆఖర్షశాసనం", to: "ఆఖరి శాసనం" },
     { from: "క్ోలోుతుని", to: "కోల్పోతున్న" },
-    { from: "చниప్ోతుని", to: "చниపోతున్న" },
-    { from: "చనిప్ోతుని", to: "చниపోతున్న" },
+    { from: "చниపోతుని", to: "చనిపోతున్న" },
     { from: "చనిపోతుని", to: "చనిపోతున్న" },
-    { from: "ముిందేగుर्ిషించ్చ", to: "ముందే గుర్తించి" },
-    { from: "ముిందేగుర్ిషించ్చ", to: "ముందే గుర్తించి" },
-    { from: "హెచిर्షక", to: "హెచ్చరిక" },
+    { from: "ముิందేగుర్ిషించ్చ", to: "ముందే గుర్తించి" },
     { from: "హెచిర్షక", to: "హెచ్చరిక" },
     { from: "భవిషయతుు", to: "భవిష్యత్తు" },
     { from: "మ దడులోని", to: "మెదడులోని" },
     { from: "పీాఫాంటల్", to: "ప్రీఫ్రంటల్" },
-    { from: "కవరెiక్స", to: "కార్טек్స్" },
-    { from: "కవరెిక్స", to: "కార్టెక్స్" },
-    { from: "శ్киుని", to: "శక్తిని" },
-    { from: "శ్కిుని", to: "శక్తిని" },
+    { from: "కవరెiక్స", to: "కార్טెక్స్" },
+    { from: "శ్киుని", to: "శльтиని" },
+    { from: "శ్కిుని", to: "శльтиని" },
     { from: "దూసుకతప్్ తుని", to: "దూసుకుపోతున్న" },
     { from: "స్టలికవన్స", to: "సిలికాన్" },
     { from: "గవూటిఫటకేషన్స", to: "గ్రాటిఫికేషన్" },
     { from: "ఊగిప్్తుని", to: "ఊగిపోతున్న" },
     { from: "భయంకరమ ైన", to: "భయంకరమైన" },
+    { from: "నడుсуని", to: "నడుస్తున్న" },
     { from: "నడుసుు ని", to: "నడుస్తున్న" },
     { from: "నడుపపతునాiడు", to: "నడుపుతున్నాడు" },
     { from: "సంబరపడుతునాiరే", to: "సంబరపడుతున్నారే" },
@@ -150,9 +150,9 @@ function smartUnicodeRepair(text) {
     { from: "ముగషింపు", to: "ముగింపు" },
     { from: "శాసనిం", to: "శాసనం" },
     { from: "శూనయింలోని", to: "శూన్యంలోని" },
+    { from: "శూనయ", to: "శూన్య" },
     { from: "గురుత్వాకరిణ", to: "గురుత్వాకర్షణ" },
     { from: "త్ో", to: "తో" },
-    { from: "పరయాణవనిi", to: "ప్రయాణాన్ని" },
     { from: "పరయాణవనిి", to: "ప్రయాణాన్ని" },
     { from: "పాయాణానిి", to: "ప్రయాణాన్ని" },
     { from: "విశ్ా", to: "విశ్వ" },
@@ -174,16 +174,20 @@ function smartUnicodeRepair(text) {
     { from: "జంతు పరవృతుiల", to: "జంతు ప్రవృత్తుల" },
     { from: "జంతు పరవృతుిల", to: "జంతు ప్రవృత్తుల" },
     { from: "పోతేీమనిష్పన", to: "పోతే మనిషిని" },
-    { from: "పోతేమనిష్పన", to: "పోతే మనిషిని" },
     { from: "ఉనికకేేత్యనసమాద్i", to: "ఉనికికే అత్యంత సమాధి" },
     { from: "తవపతకునే", to: "తప్పుకునే" },
     { from: "ఊండనే", to: "ఉందనే" },
-    { from: "తాతివక హ చిరిక", to: "తాత్విక హెచ్చరిక" },
+    { from: "తాతివక హ చిరిక", to: "తాత్విక
+
+
+
+
+హెచ్చరిక" },
     { from: "కతళముందు", to: "కళ్లముందు" },
     { from: "రైతనాయవంతము", to: "చైతన్యవంతము" },
     { from: "స్టలకవని", to: "చిట్టచివరకు" },
     { from: "మేధసుస", to: "మేధస్సు" },
-    { from: "रुiంకోవడానికి", to: "రుద్దడానికి" },
+    { from: "రుiంకోవడానికి", to: "రుద్దడానికి" },
     { from: "కవరోర్ేట లాభల కోసం", to: "కార్పొరేట్ లాభాల కోసం" },
     { from: "మధ్యాయ", to: "మరియు" },
     { from: "యుదాధ ల", to: "యుద్ధాల" },
@@ -201,9 +205,9 @@ function smartUnicodeRepair(text) {
     { from: "లోంటిమానవ్", to: "లాంటి మానవ" },
     { from: "అమిగడలాక్ో", to: "అమిగ్డలా క్రో" },
     { from: "చవర్గతరక", to: "చర్చించబోయే" },
-    { from: "విదుయత్", to: "విద్యుత్" },
-    { from: "रूపాయంతరం", to: "रूపాంతరం" },
-    { from: "రూపాయంతరం", to: "रूపాంతరం" },
+    { from: "నిోల", to: "నిర్మూలించడానికి" },
+    { from: "विదుయత్", to: "విద్యుత్" },
+    { from: "रूपాయంతరం", to: "रूపాంతరం" },
     { from: "చతందాం", to: "చూద్దాం" },
     { from: "చిట్టచవరకు", to: "చిట్టచివరకు" },
     { from: "సంచలనమ", to: "సంచలనమైన" },
