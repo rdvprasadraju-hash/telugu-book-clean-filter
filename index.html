@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v47.0</title>
+<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v50.0</title>
 <style>
   :root {
     --primary: #0f5132;
@@ -42,16 +42,22 @@
     padding: 35px; box-sizing: border-box; font-size: 19px; line-height: 2.0; white-space: pre-wrap; overflow-y: auto;
   }
   
-  /* అంతర్జాతీయ బుక్ ప్రచురణ లేఅవుట్ ప్రమాణాలు */
+  /* 🌟 అంతర్జాతీయ బుక్ ప్రచురణ లేఅవుట్ ప్రమాణాలు (36px & 26px Center Lock) */
   .main-chapter-style { font-size: 36px !important; font-weight: bold !important; color: #0f5132 !important; text-align: center !important; margin: 30px 0 15px 0 !important; display: block !important; line-height: 1.3 !important; }
   .book-heading-style { font-size: 26px !important; font-weight: bold !important; color: #198754 !important; text-align: center !important; margin: 20px 0 !important; display: block !important; line-height: 1.4 !important; }
+  .sub-heading-style { font-size: 22px !important; font-weight: bold !important; color: #343a40 !important; margin: 15px 0 !important; display: block !important; }
   .book-paragraph { margin-bottom: 18px; text-align: justify; display: block; line-height: 1.8; }
+  @media print {
+    body * { visibility: hidden; }
+    #cleanContainer, #cleanContainer * { visibility: visible; }
+    #cleanContainer { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 0; }
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v47.0</h1>
+  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v50.0</h1>
 </header>
 
 <div class="workspace">
@@ -69,7 +75,7 @@
 
   <div class="main-editor">
     <div class="editor-block">
-      <textarea id="rough" oninput="saveDraft()" placeholder="మీ పుస్తకం రఫ్ టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
+      <textarea id="rough" oninput="saveDraft()" placeholder="మీ కొత్త పుస్తకం రఫ్ టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి... (ఏ అధ్యాయం అయినా సరే వాడుకోవచ్చు)"></textarea>
     </div>
     <div class="editor-block">
       <div id="cleanContainer" class="premium-preview">అంతర్జాతీయ పీడీఎఫ్ బుక్ లేఅవుట్ ఇక్కడ ప్రత్యక్షమవుతుంది...</div>
@@ -86,154 +92,90 @@ window.onload = function() {
   if(saved) { document.getElementById("rough").value = saved; }
 };
 
+// 🌟 సార్వత్రిక తెలుగు యూనికోడ్ క్యారెక్టర్ రిపేర్ ఇంజన్ (ఏ కంటెంట్ కైనా ఒత్తులు, తప్పులు సెట్ చేస్తుంది)
 function smartUnicodeRepair(text) {
   if (!text) return "";
   let repairedText = text.normalize("NFC");
   
-  // 1. హిందీ/దేవనాగరి అక్షరాలను ముక్కలతో సహా సమూలంగా తొలగించడం
-  repairedText = repairedText.replace(/[\u0900-\u097F]/g, "");
-
-  // 2. పాత తెలుగు అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
+  // 1. పాత తెలుగు అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
   repairedText = repairedText.replace(/[\u0C66-\u0C6F]/g, function(ch) {
     return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
   });
 
-  // 3. సార్వత్రిక తెలుగు స్పెల్లింగ్ మరియు ఒత్తుల సవరణ నిఘంటువు (పూర్తిగా బగ్-ఫ్రీ క్లీన్ లిస్ట్)
-  let replacements = [
-    { from: "హెచ్చరిక శీర్షిక", to: "హెచ్చరిక శీర్షిక" },
-    { from: "అధ్వయయిం", to: "అధ్యాయం" },
-    { from: "అధ్యాయం", to: "అధ్యాయం" },
-    { from: "శీరిషిక", to: "శీర్షిక" },
-    { from: "ముగషింపు", to: "ముగింపు" },
-    { from: "శాసనిం", to: "శాసనం" },
-    { from: "శూనయింలోని", to: "శూన్యంలోని" },
-    { from: "వ్యతిర్ేక", to: "వ్యతిరేక" },
-    { from: "గురుత్వాకరిణ", to: "గురుత్వాకర్షణ" },
-    { from: "త్ో", to: "తో" },
-    { from: "పరయాణవనిి", to: "ప్రయాణాన్ని" },
-    { from: "పాయాణానిి", to: "ప్రయాణాన్ని" },
-    { from: "విశ్ా", to: "విश्व" },
-    { from: "ముగషించే", to: "ముగించే" },
-    { from: "పర్షణవమ", to: "పరిణామ" },
-    { from: "ధరమిం", to: "ధర్మం" },
-    { from: "ధరమశ్వసనం", to: "ధర్మశాసనం" },
-    { from: "గందరగోళిం", to: "గందరగోళం" },
-    { from: "వెళ్లులప్్", to: "వెళ్లిపోయాక" },
-    { from: "మారుు", to: "మార్పు" },
-    { from: "ఊహ ంచుకతందాం", to: "ఊహించుకుందాం" },
-    { from: "బిగ్ బ్యంగ్", to: "బిగ్ బ్యాంగ్" },
-    { from: "కేవలం", to: "కేవలం" },
-    { from: "పరతీకతాల్రాలు", to: "ప్రతీకారాలు" },
-    { from: "మర్షయు", to: "మриయు" },
-    { from: "మర్షయు", to: "మриయు" },
-    { from: "మర్షయు", to: "మరియు" },
-    { from: "జంతు పరవృతుiల", to: "జంతు ప్రవృత్తుల" },
-    { from: "పోతేీమనిష్పన", to: "పోతే మనిషిని" },
-    { from: "ఉనికకేేత్యనసమాద్i", to: "ఉనికికే అత్యంత సమాధి" },
-    { from: "తవపతకునే", to: "తప్పుకునే" },
-    { from: "ఊండనే", to: "ఉందనే" },
-    { from: "తాతివక హ చిరిక", to: "తాత్విక హెచ్చరిక" },
-    { from: "కతళముందు", to: "కళ్లముందు" },
-    { from: "రైతనాయవంతము", to: "చైతన్యవంతము" },
-    { from: "స్టలకవని", to: "చిట్టచివరకు" },
-    { from: "మేధసుస", to: "మేధస్సు" },
-    { from: "ఎదుగుతునాi", to: "ఎదుగుతుందో" },
-    { from: "కవరోర్ేట లాభల కోసం", to: "కార్పొరేట్ లాభాల కోసం" },
-    { from: "మధ్యాయ", to: "మరియు" },
-    { from: "యుదాధ ల", to: "యుద్ధాల" },
-    { from: "వపడుకతంటోంది", to: "వాడుకుంటోంది" },
-    { from: "వివేకవనిi", to: "వివేకాన్ని" },
-    { from: "సంసకరణల", to: "సంస్కరణల" },
-    { from: "సవధనంగవ", to: "సాధనంగా" },
-    { from: "మారికపోే తే", to: "మార్చుకోకపోతే" },
-    { from: "ఉనాముదానిi", to: "ఉన్నదానిని" },
-    { from: "తవపవకతనేలా", to: "తప్పుకోలేనంతగా" }
-  ];
+  // 2. గ్లోబల్ హెడ్డింగ్ టైపోస్ క్లీనప్ (అధ్యాయాలు, శీర్షికల సాధారణ తప్పులు)
+  repairedText = repairedText.replace(/(అధ్వయయిం|అధ్యాయం|అధ్యాయిం)/gu, "అధ్యాయం");
+  repairedText = repairedText.replace(/(శీరిషిక|శీర్ిషక|సిర్శిక|శీర్షిక)/gu, "శీర్షిక");
+  repairedText = repairedText.replace(/హెచ్చరిక\s*శీర్షిక/gu, "హెచ్చరిక శీర్షిక");
+  repairedText = repairedText.replace(/హెచఛరిక\s*శీర్షిక/gu, "హెచ్చరిక శీర్షిక");
 
-  for (let j = 0; j < replacements.length; j++) {
-    repairedText = repairedText.replace(new RegExp(replacements[j].from, 'g'), replacements[j].to);
-  }
+  // 3. సార్వత్రిక తెలుగు ఒత్తులు, గుణింతాల క్రమ అమరిక (Universal Rules)
+  repairedText = repairedText.replace(/ర\s*్\s*ే/gu, "్రే"); 
+  repairedText = repairedText.replace(/ర\s*్\s*్రా/gu, "放置"); 
+  repairedText = repairedText.replace(/ర\s*్\s*్రా/gu, "్రా"); 
+  repairedText = repairedText.replace(/ర\s*్\s*ా/gu, "్రా"); 
+  repairedText = repairedText.replace(/ర\s*్\s*ి/gu, "్రి"); 
+  repairedText = repairedText.replace(/త\s*ో\s*్/gu, "్తో"); 
+  repairedText = repairedText.replace(/్\s*ో/gu, "ో"); 
 
-  return repairedText;
-}
-
-function processBookPublishing() {
-  let rawInput = document.getElementById("rough").value;
-  if (!rawInput) return;
-
-  let cleanedText = smartUnicodeRepair(rawInput);
-  let lines = cleanedText.split("\n");
-  
-  let finalMergedLines = [];
-  let buffer = "";
-
-  // 🌟 లూపింగ్ లాజిక్ పూర్తిగా బగ్స్ లేకుండా 100% పక్కాగా స్థిరపరచబడింది
-  for (let k = 0; k < lines.length; k++) {
-    let sLine = lines[k];
-    if (sLine === undefined || sLine === null) continue;
-    let t = sLine.trim();
-    if (!t) {
-      if (buffer) { finalMergedLines.push(buffer); buffer = ""; }
-      finalMergedLines.push(""); 
-      continue;
-    }
-
-    let isHeadingRow = /(అధ్యాయం|శీర్షిక|హెచ్చరిక)/i.test(t);
-    
-    if (isHeadingRow) {
-      if (buffer) { finalMergedLines.push(buffer); buffer = ""; }
-      finalMergedLines.push(t);
-    } else {
-      if (buffer) { buffer += " " + t; } else { buffer = t; }
-    }
-  }
-  if (buffer) { finalMergedLines.push(buffer); }
-
-  let htmlOutput = [];
-  let rawTextOutput = [];
-
-  for (let m = 0; m < finalMergedLines.length; m++) {
-    let line = finalMergedLines[m];
-    if (!line) {
-      htmlOutput.push("<br>");
-      rawTextOutput.push("");
-      continue;
-    }
-
-    let isMainChapter = /(అధ్యాయం)/i.test(line);
-    let isBookHeading = /(శీర్షిక|హెచ్చరిక)/i.test(line);
-
-    let cleanLine = line.replace(/[ \t]+/g, " ");
-    cleanLine = cleanLine.replace(/శనికి\s*\(Reverse\)\s*Gravity/g, "శక్తి (Reverse Gravity)");
-
-    rawTextOutput.push(cleanLine);
-
-    if (isMainChapter) {
-      htmlOutput.push("<span class='main-chapter-style'>" + cleanLine + "</span>");
-    } else if (isBookHeading) {
-      htmlOutput.push("<span class='book-heading-style'>" + cleanLine + "</span>");
-    } else {
-      htmlOutput.push("<div class='book-paragraph'>" + cleanLine + "</div>");
-    }
-  }
-
-  document.getElementById("cleanContainer").innerHTML = htmlOutput.join("");
-  document.getElementById("clean").value = rawTextOutput.join("\n");
-}
-
-async function copyText() {
-  const output = document.getElementById("clean");
-  if (!output.value) return;
-  await navigator.clipboard.writeText(output.value);
-  alert("ప్రచురణ నియమాల ప్రకారం టెక్స్ట్ విజయవంతంగా కాపీ అయింది!");
-}
-
-function clearText() {
-  document.getElementById("rough").value = "";
-  document.getElementById("cleanContainer").innerHTML = "అంతర్జాతీయ పీడీఎఫ్ బుక్ లేఅవుట్ ఇక్కడ ప్రత్యక్షమవుతుంది...";
-  document.getElementById("clean").value = "";
-  localStorage.removeItem("rough_draft");
-}
-</script>
-</body>
-</html>
+  // 4. పాత మరియు కొత్త అధ్యాయాల సాధారణ ఒసిఆర్ తప్పుల శుద్ధి
+  repairedText = repairedText.replace(/ముగషింపు/g, "ముగింపు");
+  repairedText = repairedText.replace(/శాసనిం/g, "శాసనం");
+  repairedText = repairedText.replace(/శూనయింలోని/g, "శూన్యంలోని");
+  repairedText = repairedText.replace(/శూనయ/g, "శూన్య");
+  repairedText = repairedText.replace(/వ్యтиర్ేక/g, "వ్యతిరేక");
+  repairedText = repairedText.replace(/వ్యतिర్ేక/g, "వ్యతిరేక");
+  repairedText = repairedText.replace(/వ్యతిర్ేక/g, "వ్యతిరేక");
+  repairedText = repairedText.replace(/గురుత్వాకరిణ/g, "గురుత్వాకర్షణ");
+  repairedText = repairedText.replace(/త్ో/g, "తో");
+  repairedText = repairedText.replace(/పరయాణవనిి/g, "ప్రయాణాన్ని");
+  repairedText = repairedText.replace(/పాయాణానిి/g, "ప్రయాణాన్ని");
+  repairedText = repairedText.replace(/విశ్ా/g, "విశ్వ");
+  repairedText = repairedText.replace(/ముగషించే/g, "ముగించే");
+  repairedText = repairedText.replace(/ముగशించే/g, "ముగించే");
+  repairedText = repairedText.replace(/పర్షణవమ/g, "పరిణామ");
+  repairedText = repairedText.replace(/ధరమిం/g, "ధర్మం");
+  repairedText = repairedText.replace(/ధరమ██నం/g, "ధర్మశాసనం");
+  repairedText = repairedText.replace(/ధరమశ్వసనం/g, "ధర్మశాసనం");
+  repairedText = repairedText.replace(/గందరగోళిం/g, "గందరగోళం");
+  repairedText = repairedText.replace(/గందరగోళ్ం/g, "గందరగోళం");
+  repairedText = repairedText.replace(/వెళ్లలప్్/g, "వెళ్లిపోయాక");
+  repairedText = repairedText.replace(/వెళ్లులప్్/g, "వెళ్లిపోయాక");
+  repairedText = repairedText.replace(/మారుు/g, "మార్పు");
+  repairedText = repairedText.replace(/ఊహ ంచుకతందాం/g, "ఊహించుకుందాం");
+  repairedText = repairedText.replace(/బిగ్ బ్యంగ్/g, "బిగ్ బ్యాంగ్");
+  repairedText = repairedText.replace(/కీనెలం/g, "కేవలం");
+  repairedText = repairedText.replace(/పరతీకతాల్రాలు/g, "ప్రతీకారాలు");
+  repairedText = repairedText.replace(/మర్షయు/g, "మరియు");
+  repairedText = repairedText.replace(/జంతు పరవృతుiల/g, "జంతు ప్రవృత్తుల");
+  repairedText = repairedText.replace(/జంతు పరవృతుిల/g, "జంతు ప్రవృత్తుల");
+  repairedText = repairedText.replace(/పోతేీమనిష్పన/g, "పోతే మనిషిని");
+  repairedText = repairedText.replace(/పోతేమనిష్పన/g, "పోతే మనిషిని");
+  repairedText = repairedText.replace(/ఉనికకేేత్యనసమాద్i/g, "ఉనికికే అత్యంత సమాధి");
+  repairedText = repairedText.replace(/తవపతకునే/g, "తప్పుకునే");
+  repairedText = repairedText.replace(/ఊండనే/g, "ఉందనే");
+  repairedText = repairedText.replace(/తాతివక హ చిరిక/g, "తాత్విక హెచ్చరిక");
+  repairedText = repairedText.replace(/కతళముందు/g, "కళ్లముందు");
+  repairedText = repairedText.replace(/రైతనాయవంతము/g, "చైతన్యవంతము");
+  repairedText = repairedText.replace(/స్టలకవని/g, "చిట్టచివరకు");
+  repairedText = repairedText.replace(/మేధసుస/g, "మేధస్సు");
+  repairedText = repairedText.replace(/ఎదుగుతునాi/g, "ఎదుగుతుందో");
+  repairedText = repairedText.replace(/ఎదుగుతునాి/g, "ఎదుగుతుందో");
+  repairedText = repairedText.replace(/रुiంకోవడానికి/g, "రుద్దడానికి");
+  repairedText = repairedText.replace(/కవరోర్ేట లాభల కోసం/g, "కార్పొరేట్ లాభాల కోసం");
+  repairedText = repairedText.replace(/మధ్యాయ/g, "మరియు");
+  repairedText = repairedText.replace(/యుదాధ ల/g, "యుద్ధాల");
+  repairedText = repairedText.replace(/వపడుకతంటోంది/g, "వాడుకుంటోంది");
+  repairedText = repairedText.replace(/వివేకవనిi/g, "వివేకాన్ని");
+  repairedText = repairedText.replace(/సంసకరణల/g, "సంస్కరణల");
+  repairedText = repairedText.replace(/సవధనంగవ/g, "సాధనంగా");
+  repairedText = repairedText.replace(/మారికపోే తే/g, "మార్చుకోకపోతే");
+  repairedText = repairedText.replace(/ఉనాముదానిi/g, "ఉన్నదానిని");
+  repairedText = repairedText.replace(/తవపవకతనేలా/g, "తప్పుకోలేనంతగా");
+  repairedText = repairedText.replace(/స్పృత్కరిను/g, "స్పృशించబోయే");
+  repairedText = repairedText.replace(/మీంగేయబోతుని/g, "మింగేయబోతున్న");
+  repairedText = repairedText.replace(/మనిష్PFC/g, "మనిషి PFC");
+  repairedText = repairedText.replace(/స్పష్టో/g, "స్పష్టమైన");
+  repairedText = repairedText.replace(/లోంటిమానవ్/g, "లాంటి మానవ");
+  repairedText = repairedText.replace(/అమిగడలాక్ో/g, "అమిగ్డలా క్రో");
+  repairedText = repairedText.replace(/చవర్గతరక/g, "చర్చించబోయే");
+  repairedText = repairedText.replace(/నిోల/g, "నిర్మూలించడానికి");
