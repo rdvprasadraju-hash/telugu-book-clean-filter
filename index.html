@@ -18,38 +18,38 @@
 <div class="box">
   <h2 style="text-align:center; color:#0f5132; margin-top:0;">📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v95.0</h2>
   <div id="statusBox" class="status"></div>
-  <textarea id="in" placeholder="ఏఐ (AI) ఎన్ని తప్పులతో కంటెంట్ ఇచ్చినా సరే ఇక్కడ పేస్ట్ చేయండి... ఇది అక్షరాల కోడ్స్ విశ్లేషించి ఆన్‌లైన్ నిఘంటువు ద్వారా సరిచేస్తుంది."></textarea>
+  <textarea id="in" placeholder="ఏఐ (AI) ఎన్ని తప్పులతో కంటెంట్ ఇచ్చినా సరే ఇక్కడ పేస్ట్ చేయండి..."></textarea>
   <button id="cleanBtn" onclick="universalClean()">✨ అన్ని తప్పులను ఒకేసారి సరిచేయి</button>
-  <button style="background:#0d6efd;" onclick="navigator.clipboard.writeText(document.getElementById('out').innerText); alert('కాపీ అయింది!');">📋 కాపీ చేయi</button>
+  <button style="background:#0d6efd;" onclick="navigator.clipboard.writeText(document.getElementById('out').innerText); alert('కాపీ అయింది!');">📋 కాపీ చేయి</button>
   <div id="out" class="output">సరిదిద్దబడిన ప్యూర్ తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
 <script>
-// 🌐 సార్వత్రిక అన్యభాషా ట్రాన్స్‌లేటర్ ఇంజన్ (CORS ఫ్రీ - మల్టీ-లాంగ్వేజ్ కన్వర్టర్)
+// 🌐 సార్వత్రిక ట్రాన్స్‌లేటర్ ఇంజన్ (గూగుల్ క్లౌడ్ ద్వారా అన్యభాషలను మార్చే లాజిక్)
 async function convertOtherLanguageToTelugu(textSegment) {
   try {
-    // CORS సమస్య రాకుండా బ్రౌజర్ రక్షిత ప్రాక్సి ఎండ్ పాయింట్ ద్వారా కన్వర్ట్ చేస్తుంది
     let url = `https://googleapis.com{encodeURIComponent(textSegment)}`;
     let response = await fetch(url);
     let data = await response.json();
     
     if (data && data[0]) {
-      let fullText = "";
-      for (let item of data[0]) {
-        if (item && item[0]) {
-          fullText += item[0];
+      let fullTranslation = "";
+      for (let i = 0; i < data[0].length; i++) {
+        if (data[0][i] && data[0][i][0]) {
+          fullTranslation += data[0][i][0];
         }
       }
-      if (fullText.trim().length > 0) return fullText;
+      if (fullTranslation.trim().length > 0) {
+        return fullTranslation;
+      }
     }
     return textSegment;
   } catch (e) {
-    // లోకల్ నిఘంటువు శోధన ఫాల్‌బ్యాక్
     return textSegment;
   }
 }
 
-// 🔍 గూగుల్ క్లౌడ్ నిఘంటువు శోధన ఇంజన్ (తెలుగు ఒత్తుల కరెక్షన్ కోసం)
+// 🔍 గూగుల్ క్లౌడ్ నిఘంటువు శోధన ఇంజన్ (తెలుగు పదాల ఒత్తులను వెతికేందుకు)
 async function onlineDictionaryLookup(word) {
   try {
     let url = `https://google.com{encodeURIComponent(word)}&itc=te-t-i0-und&num=3`;
@@ -73,7 +73,7 @@ async function onlineDictionaryLookup(word) {
   }
 }
 
-// 🧠 అక్షరాల కోడ్ విశ్లేషణ మరియు దీర్ఘాల లోపాలను కనిపెట్టే ఇంటెలిజెంట్ ఇంజన్
+// 🧠 అక్షరాల కోడ్ విశ్లేషణ ఇంజన్
 function analyzeCharacterCodesAndFix(word) {
   let cleaned = word;
   if (cleaned.endsWith("రు") && cleaned.length > 2) {
@@ -94,7 +94,7 @@ async function universalClean() {
   btn.innerText = "⏳ అక్షరాల కోడ్స్ విశ్లేషిస్తూ, నిఘంటువులో శోధిస్తోంది...";
   btn.disabled = true;
   statusBox.style.display = "block";
-  statusBox.innerText = "🔍 ఆన్‌లైన్ నిఘంటువు శోధన మరియు అన్యభాషా కన్వర్టర్ యాక్టివ్‌గా ఉంది...";
+  statusBox.innerText = "🔍 అన్యభాషలను కన్వర్ట్ చేస్తూ, తెలుగు ఒత్తులను సరిచేస్తోంది...";
 
   // 🌟 1. తెలుగు టెక్స్ట్ బైట్స్ ఒకే సరళరేఖలోకి తీసుకురావడం (మీ పాత కోడ్)
   let cleanText = text.normalize("NFC");
@@ -113,45 +113,43 @@ async function universalClean() {
   cleanText = cleanText.replace(/త\s*ో\s*్/gu, "్తో"); 
   cleanText = cleanText.replace(/్\s*ో/gu, "ో"); 
 
-  // 🌟 5. సాధారణ ఒసిఆర్ టైపోస్ (శీర్షికలు, అధ్యాయాల ముద్ద పదాల క్లీనప్) (మీ పాత కోడ్)
+  // 🌟 5. సాధారణ ఒసిఆర్ టైపోస్ క్లీనప్ (మీ పాత కోడ్)
   cleanText = cleanText.replace(/(అధ్వయయిం|అధ్యాయిం)/gu, "అధ్యాయం");
   cleanText = cleanText.replace(/(శీరిషిక|శీర్ిషక|సిర్శిక|శీర\s*్\s*і\s*ష\s*క)/gu, "శీర్షಿಕ");
   cleanText = cleanText.replace(/ఆఖర్షశాసనం/g, "ఆఖరి శాసనం");
   cleanText = cleanText.replace(/హెచిర్షక/g, "హెచ్చరిక");
 
-  // 🌟 6. 🌐 ఆటోమేటిక్ ట్రాన్స్‌లేటర్ & నిఘంటువు శోధన ఎగ్జిక్యూషన్ లాజిక్ (English Intact)
-  // టెక్స్ట్‌ని ఇంగ్లీష్ శ్రేణులు మరియు నాన్-ఇంగ్లీష్ శ్రేణులుగా పక్కాగా విడదీస్తుంది
-  let tokens = cleanText.split(/([a-zA-Z0-9\s,建设项目.?!:;""'()\[\]{}‌]+)/);
+  // 🌟 6. 🌐 పక్కా వర్కింగ్ మల్టీ-లాంగ్వేజ్ ట్రాన్స్‌లేటర్ లాజిక్ (English Safe)
+  let tokens = cleanText.split(/(\s+|[,.?!:;""'()\[\]{}‌])/);
   
   for (let i = 0; i < tokens.length; i++) {
-    let segment = tokens[i];
-    if (segment && segment.trim().length > 0) {
-      // ఇంగ్లీష్ కానీ పక్షంలో (అంటే తెలుగు పదాలు లేదా అరబిక్/ఉర్దూ/హిందీ లాంటి ఇతర అన్యభాషలు అయితే)
-      if (!/[a-zA-Z0-9]/.test(segment)) {
-        
-        // ఒకవేళ అది తెలుగు లిపి కాకపోతే (ఉదాహరణకు: అరబిక్ లేదా ఉర్దూ స్క్రిప్ట్) దానిని తెలుగులోకి కన్వర్ట్ చేస్తుంది
-        if (!/[\u0C00-\u0C7F]/.test(segment)) {
-          segment = await convertOtherLanguageToTelugu(segment);
-        }
+    let token = tokens[i];
+    let cleanWord = token.replace(/[,.?!:;""'()\[\]{}‌]/g, "").trim();
+    
+    if (cleanWord.length > 0 && isNaN(cleanWord)) {
+      
+      // కండిషన్ A: ఇంగ్లీష్ అక్షరాలైతే ఏమాత్రం తాకదు (Ignore English)
+      if (/[a-zA-Z]/.test(cleanWord)) {
+        continue;
+      }
+      
+      // కండిషన్ B: తెలుగు కాకుండా మరేదైనా అన్యభాష అయితే (ఉర్దూ, అరబిక్)
+      if (!/[\u0C00-\u0C7F]/.test(cleanWord)) {
+        let converted = await convertOtherLanguageToTelugu(cleanWord);
+        tokens[i] = token.replace(cleanWord, converted);
+        cleanWord = converted; 
+      }
 
-        // ఆ తర్వాత ఆ ముక్కలోని తెలుగు పదాల ఒత్తులను, దీర్ఘాలను నిఘంటువు ప్రకారం సరిచేస్తుంది
-        let subWords = segment.split(/(\s+|[,.?!:;""'()])/);
-        for (let j = 0; j < subWords.length; j++) {
-          let cleanWord = subWords[j].replace(/[,.?!:;""'()]/g, "").trim();
-          if (cleanWord.length > 0 && isNaN(cleanWord) && /[\u0C00-\u0C7F]/.test(cleanWord)) {
-            let processedWord = analyzeCharacterCodesAndFix(cleanWord);
-            let dictionaryWord = await onlineDictionaryLookup(processedWord);
-            subWords[j] = subWords[j].replace(cleanWord, dictionaryWord);
-          }
-        }
-        tokens[i] = subWords.join("");
+      // కండిషన్ C: తెలుగు పదం యొక్క ఒత్తులను డిక్షనరీ శోధన ద్వారా సరిచేస్తుంది
+      if (/[\u0C00-\u0C7F]/.test(cleanWord)) {
+        let processedWord = analyzeCharacterCodesAndFix(cleanWord);
+        let dictionaryWord = await onlineDictionaryLookup(processedWord);
+        tokens[i] = tokens[i].replace(cleanWord, dictionaryWord);
       }
     }
   }
 
-  // ఫైనల్ ఔట్‌పుట్‌ను స్క్రీన్‌పై చూపిస్తుంది
   outputDiv.innerText = tokens.join("");
-  
   btn.innerText = "✨ అన్ని తప్పులను ఒకేసారి సరిచేయి";
   btn.disabled = false;
   statusBox.style.display = "none";
