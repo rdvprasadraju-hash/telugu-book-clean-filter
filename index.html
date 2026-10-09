@@ -3,119 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>తెలుగు బుక్ పబ్లిషింగ్ లేఅవుట్ ఫిల్టర్</title>
+<title>తెలుగు బుక్ రైటర్ ప్రో v2.0 - Premium Edition</title>
 <style>
-body {
-  font-family: 'Mandali', 'Pothana', sans-serif;
-  padding: 20px;
-  max-width: 950px;
-  margin: auto;
-  line-height: 1.8;
-  background-color: #f4f6f8;
-  color: #333;
-}
-h2 {
-  color: #0d5c3a;
-  border-bottom: 3px solid #0d5c3a;
-  padding-bottom: 10px;
-}
-textarea {
-  width: 100%;
-  height: 250px;
-  box-sizing: border-box;
-  padding: 15px;
-  font-size: 16px;
-  margin: 10px 0;
-  border: 2px solid #bdc3c7;
-  border-radius: 6px;
-}
-button {
-  padding: 12px 25px;
-  margin: 5px 4px;
-  font-size: 15px;
-  cursor: pointer;
-  background-color: #0d5c3a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-}
-button:hover {
-  background-color: #09442a;
-}
-.clear-btn {
-  background-color: #c0392b;
-}
-.clear-btn:hover {
-  background-color: #962d22;
-}
-.info-box {
-  background-color: #e8f5e9;
-  padding: 12px 20px;
-  border-left: 5px solid #0d5c3a;
-  margin-bottom: 20px;
-  font-size: 14px;
-  border-radius: 0 6px 6px 0;
-}
-.output-preview {
-  width: 100%;
-  min-height: 250px;
-  background-color: #ffffff;
-  border: 2px solid #bdc3c7;
-  border-radius: 6px;
-  padding: 25px;
-  box-sizing: border-box;
-  margin-top: 10px;
-  font-size: 18px;
-  line-height: 1.9;
-  white-space: pre-wrap;
-  overflow-y: auto;
-}
-/* అంతర్జాతీయ పబ్లిషింగ్ రూల్: చాప్టర్లు & నంబర్లకు పెద్ద ఫాంట్ సైజ్ */
-.book-heading {
-  font-size: 26px;
-  font-weight: bold;
-  color: #0d5c3a;
-  margin-top: 20px;
-  margin-bottom: 15px;
-  display: block;
-  border-bottom: 2px solid #0d5c3a;
-  padding-bottom: 8px;
-}
+  :root {
+    --primary: #0f5132;
+    --primary-hover: #146c43;
+    --bg-dark: #1e1e24;
+    --bg-light: #f8f9fa;
+    --border-color: #dee2e6;
+  }
+  
+  body {
+    font-family: 'Mandali', 'Pothana', 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f3f5;
+    color: #212529;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* టాప్ హెడర్ బార్ */
+  header {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .version-badge {
+    background-color: rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  /* మెయిన్ వర్క్‌స్పేస్ లేఅవుట్ */
+  .workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ఎడమ వైపు కంట్రోల్ ప్యానెల్ */
+  .sidebar {
+    width: 280px;
+    background-color: white;
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  .panel-section {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+  }
+
+  .panel-section h3 {
+    margin: 0 0 10px 0;
+    font-size: 15px;
+    color: var(--primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+  }
+
+  .rule-list {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #495057;
+  }
+
+  .action-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary { background-color: var(--primary); color: white; }
+  .btn-primary:hover { background-color: var(--primary-hover); }
+  .btn-secondary { background-color: #6c757d; color: white; }
+  .btn-secondary:hover { background-color: #5a6268; }
+  .btn-danger { background-color: #dc3545; color: white; }
+  .btn-danger:hover { background-color: #bd2130; }
+
+  /* కుడి వైపు రైటింగ్ ఏరియా */
+  .main-editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    gap: 15px;
+    overflow-y: auto;
+  }
+
+  .editor-block {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 200px;
+  }
+
+  .editor-block label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #495057;
+    font-size: 14px;
+  }
+
+  textarea {
+    width: 100%;
+    flex: 1;
+    box-sizing: border-box;
+    padding: 16px;
+    font-size: 16px;
+    line-height: 1.7;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    resize: none;
+    background-color: white;
+  }
+
+  textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(15,81,50,0.1);
+  }
+
+  /* ప్రీమియం ప్యానెల్ అవుట్‌పుట్ వ్యూ */
+  .premium-preview {
+    width: 100%;
+    flex: 1;
+    background-color: #fffdf6; /* చదవడానికి అనుకూలమైన బుక్ పేపర్ కలర్ */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 24px;
+    box-sizing: border-box;
+    font-size: 19px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  }
+
+  /* అంతర్జాతీయ ప్రచురణ శీర్షిక డిజైన్ */
+  .book-heading {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--primary);
+    margin-top: 24px;
+    margin-bottom: 16px;
+    display: block;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 6px;
+    font-family: sans-serif;
+  }
+
+  /* స్టేటస్ బార్ */
+  .status-bar {
+    background-color: white;
+    border-top: 1px solid var(--border-color);
+    padding: 8px 24px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #6c757d;
+  }
 </style>
 </head>
 <body>
 
-<h2>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ఫిల్టర్</h2>
+<header>
+  <h1>📚 తెలుగు బుక్ రైటర్ ప్రో</h1>
+  <span class="version-badge">PREMIUM EDITION v2.0</span>
+</header>
 
-<div class="info-box">
-  <strong>సక్రియ నియమాలు:</strong> ఒత్తులు మార్చకుండా ఆటో-కరెక్షన్ | శీర్షికలకు పెద్ద అంతర్జాతీయ ఫాంట్ సైజ్ (26px) | మధ్యలో వచ్చే ఇంగ్లీష్ పదాలకు బ్రాకెట్లు | కేవలం 123 అంకెలు.
+<div class="workspace">
+  <!-- లెఫ్ట్ సైడ్‌బార్ కంట్రోల్ ప్యానెల్ -->
+  <div class="sidebar">
+    <div class="panel-section">
+      <h3>🛠️ పబ్లిషింగ్ కంట్రోల్స్</h3>
+      <button class="action-btn btn-primary" onclick="processBookPublishing()">✨ లేఅవుట్ క్లీన్ చేయి</button>
+      <div style="height: 8px;"></div>
+      <button class="action-btn btn-secondary" onclick="copyText()">📋 క్లీన్ టెక్స్ట్ కాపీ</button>
+      <div style="height: 8px;"></div>
+      <button class="action-btn btn-danger" onclick="clearText()">🗑️ క్లియర్ బోర్డు</button>
+    </div>
+
+    <div class="panel-section">
+      <h3>📜 యాక్టివ్ పబ్లిషింగ్ రూల్స్</h3>
+      <ul class="rule-list">
+        <li>అంతర్జాతీయ శీర్షికల శైలి (28px)</li>
+        <li>పక్కా తెలుగు ఒత్తుల రక్షణ</li>
+        <li>వాక్యం మధ్యలో ఇంగ్లీష్ పదాలకు ( ) బ్రాకెట్లు</li>
+        <li>కేవలం స్టాండర్డ్ 123 అంకెలు మాత్రమే</li>
+        <li>ఆటోమేటిక్ డబుల్ స్పేస్ కంట్రోల్</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- రైట్ ఎడిటర్ స్పేస్ -->
+  <div class="main-editor">
+    <div class="editor-block">
+      <label>✍️ రచయిత రఫ్ టెక్స్ట్ (Rough Manuscript):</label>
+      <textarea id="rough" oninput="updateCounts()" placeholder="మీ పుస్తకం టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి లేదా టైప్ చేయండి..."></textarea>
+    </div>
+    
+    <div class="editor-block">
+      <label>📖 పబ్లిషింగ్ రెడీ ప్యూర్ లేఅవుట్ వ్యూ (Ready for Print):</label>
+      <div id="cleanContainer" class="premium-preview">సరిదిద్దబడిన ప్యూర్ టెక్స్ట్ అంతర్జాతీయ లేఅవుట్ ఫాంట్‌తో ఇక్కడ కనిపిస్తుంది...</div>
+    </div>
+  </div>
 </div>
 
-<label><strong>రచయిత రఫ్ టెక్స్ట్ (Rough Manuscript):</strong></label>
-<textarea id="rough" placeholder="మీ పుస్తకం టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
-
-<button onclick="processBookPublishing()">బుక్ లేఅవుట్ క్లీన్ చేయి</button>
-<button onclick="copyText()">క్లీన్ టెక్స్ట్ కాపీ చేయి</button>
-<button class="clear-btn" onclick="clearText()">క్లియర్</button>
-
-<label><strong>పబ్లిషింగ్ రెడీ ప్యూర్ లేఅవుట్ వ్యూ (Ready for Print):</strong></label>
-<div id="cleanContainer" class="output-preview">సరిదిద్దబడిన ప్యూర్ టెక్స్ట్ అంతర్జాతీయ లేఅవుట్ ఫాంట్‌తో ఇక్కడ కనిపిస్తుంది...</div>
 <textarea id="clean" style="display:none;"></textarea>
 
+<!-- లైవ్ కౌంటర్ స్టేటస్ బార్ -->
+<div class="status-bar">
+  <span id="wordCount">పదాలు: 0</span>
+  <span id="charCount">అక్షరాలు: 0</span>
+  <span>System State: Ready</span>
+</div>
+
 <script>
-// ఒత్తులు చెడిపోకుండా కేవలం పక్కా పదాలను మాత్రమే మార్చే మాస్టర్ డిక్షనరీ
 const masterSpellCheck = {
   "ముగషింపు": "ముగింపు", "ముగషించే": "ముగించే", "వ్యతిర్ేక": "వ్యతిరేక",
-  "పరయాణవనిి": "ప్రయాణాన్ని", "పాయాణానిి": "ప్రయాణాన్ని", "ధరమిం": "ధర్మం",
+  "పరయాణవనిి": "ప్రయాణాన్ని", "పాయాణానిi": "ప్రయాణాన్ని", "ధరమిం": "ధర్మం",
   "విశ్ా": "విశ్వ", "పర్షణవమ": "పరిణామ", "శాసనిం": "శాసనం", "శ్వసనం": "శాసనం",
-  "కవంతి": "కాంతి", "వేగంగవ": "వేగంగా", "నెటేిస్టన": "నెట్టేసిన", "ర్షవ్ర్్": "రివర్స్",
+  "కవంతి": "కాంతి", "വേగంగవ": "వేగంగా", "నెటేిస్టన": "నెట్టేసిన", "ర్షవ్ర్్": "రివర్స్",
   "శ్క్ిత": "శక్తి", "ప్్వారంభంచందో": "ప్రారంభించిందో", "ఇపపుడు": "ఇప్పుడు",
-  "యొकక": "యొక్క", "యొกก": "యొక్క", "యొక్క": "యొక్క", "యొकक": "యొక్క",
+  "యొकక": "యొక్క", "యొกก": "యొక్క", "యొక్క": "యొక్క", "యొकక": "యొక్క",
   "క్రూరతావనిి": "క్రూరత్వాన్ని", "అశ్వంతిని": "అశాంతిని", "స్టదధమవపతోంది": "సిద్ధమవుతోంది",
   "ఘరషణ": "ఘర్షణ", "సంవతసరవల": "సంవత్సరాల", "సంవతసరవలతగవ": "సంవత్సరాలుగా",
   "తరవవత": "తర్వాత", "మేధసుసగవ": "మేధస్సుగా", "పాశ్వంత": "ప్రశాంత", "పాశ్వంతంగవ": "ప్రశాంతంగా",
-  "స్టథతి": "స్థితి", "వెైపప": "వైపు", "అడుగులత": "అడుగులు", "వేస్ు": "వేస్తోంది",
+  "స్టథతి": "స్థితి", "వెైపప": "వైపు", "అడుగులత": "అడుగులు", "веస్ు": "వేస్తోంది",
   "గందరగోళ్ం": "గందరగోళం", "శ్బ్ద": "శబ్దాలు", "బంధువపల": "బంధువుల", "బంధువపలంతా": "బంధువులంతా",
   "అరుపపలత": "అరుపులతో", "పటలలల": "పిల్లల", "అలలరితో": "అల్లరితో", "ఉంట": "ఉంటుంది",
   "కవనీ": "కానీ", "రవతిా": "రాత్రి", "అయ్యయసరికి": "అయ్యేసరికి", "ముగిస్ట": "ముగిసి",
@@ -126,16 +275,22 @@ const masterSpellCheck = {
   "పావృతుు": "ప్రవృత్తుల", "అంతమ": "అంతమై", "పరిపూరణమ": "పరిపూర్ణమైన",
   "వెైజఞా": "వైజ్ఞానిక", "చేరుకతంట": "చేరుకుంటుంది", "గురుతావकरషణ": "గురుత్వాకర్షణ",
   "అప్వరమ": "అపారమైన", "సవరవతిాక": "సార్వత్రిక", "పరామతో": "ప్రేమతో",
-  "తీరుు": "తీర్పు", "రచయ్తగవ": "రచయితగా", "సమాజఞనికి": "సమాజానికి",
+  "తీరుు": "తీర్పు", "రచయ్తగవ": "రచయితగా", "సмаజఞనికి": "సమాజానికి",
   "అధ్వయయిం": "అధ్యాయం", "పర్షమితులు": "పరిమితులు", "మర్షయు": "మరియు",
   "అలాార్షథమిక్": "అల్గారిథమిక్", "గురుత్వాకరిణ": "గురుత్వాకర్షణ"
 };
+
+function updateCounts() {
+  let text = document.getElementById("rough").value;
+  let words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById("wordCount").innerText = "పదాలు: " + words;
+  document.getElementById("charCount").innerText = "అక్షరాలు: " + text.length;
+}
 
 function processBookPublishing() {
   let text = document.getElementById("rough").value;
   if (!text) return;
 
-  // కామన్ మిస్టేక్స్ ని ముందుగా క్లీన్ చేయడం
   text = text.replace(/⚠️\[సరిచూసుకోండి\]/g, "");
   text = text.replace(/డ\s+ジ\s+న\s+ల్స/g, "డిజిటల్");
   text = text.replace(/డ\s+జిటల్స/g, "డిజిటల్");
@@ -151,9 +306,7 @@ function processBookPublishing() {
       continue;
     }
 
-    // అంతర్జాతీయ పబ్లిషింగ్ రూల్: శీర్షిక లేదా అధ్యాయం లైన్ గుర్తింపు
     let isHeading = /^(శీర్షిక|అధ్యాయం|అధ్వయయిం|Title|Chapter)/i.test(line.trim());
-
     let words = line.split(/\s+/);
     let processedWords = [];
 
@@ -161,26 +314,21 @@ function processBookPublishing() {
       let word = words[i];
       if (!word) continue;
 
-      // 1. కేవలం 123 అంకెలను మాత్రమే ఉంచడం, పాత తెలుగు అంకెలను ఇంటర్నేషనల్ గా మార్చడం
       word = word.replace(/[\u0C66-\u0C6F]/gu, function(ch) {
         return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
       });
 
-      // 2. వింత గుర్తులను తీసేయడం, ప్రాథమిక గుర్తులు (.,!?()) మాత్రమే ఉంచడం
       word = word.replace(/[^\u0C00-\u0C7Fa-zA-Z0-9.,!?()]/gu, "");
       if (!word) continue;
 
-      // విరామ చిహ్నాలు వేరు చేయడం
       let cleanWord = word.replace(/[.,!?()]/g, "");
       let punctuationBefore = word.match(/^[(]*/) ? word.match(/^[(]*/) : "";
       let punctuationAfter = word.match(/[.,!?)]*$/) ? word.match(/[.,!?)]*$/) : "";
 
-      // 3. డిక్షనరీ సవరణ
       if (masterSpellCheck[cleanWord]) {
         cleanWord = masterSpellCheck[cleanWord];
       }
 
-      // 4. ఇంగ్లీష్ పదాల బ్రాకెట్ రూల్
       let isEnglish = /^[a-zA-Z0-9]+$/.test(cleanWord);
       if (isEnglish) {
         if (i === 0 || isHeading) {
@@ -189,53 +337,3 @@ function processBookPublishing() {
           word = punctuationBefore + "(" + cleanWord + ")" + punctuationAfter;
         }
       } else {
-        word = punctuationBefore + cleanWord + punctuationAfter;
-      }
-
-      processedWords.push(word);
-    }
-
-    let cleanLine = processedWords.join(" ");
-    
-    // స్పేసింగ్ సర్దుబాటు
-    cleanLine = cleanLine.replace(/\s+([.,!?}])/g, "$1");
-    cleanLine = cleanLine.replace(/([({])\s+/g, "$1");
-    cleanLine = cleanLine.replace(/([.,!?])(?=[^\s])/g, "$1 ");
-    
-    let finalLine = cleanLine.trim();
-    rawTextOutput.push(finalLine);
-
-    if (isHeading) {
-      htmlOutput.push("<span class='book-heading'>" + finalLine + "</span>");
-    } else {
-      htmlOutput.push("<div>" + finalLine + "</div>");
-    }
-  }
-
-  document.getElementById("cleanContainer").innerHTML = htmlOutput.join("");
-  document.getElementById("clean").value = rawTextOutput.join("\n");
-}
-
-async function copyText() {
-  const output = document.getElementById("clean");
-  if (!output.value) {
-    alert("ముందుగా క్లీన్ బటన్ నొక్కండి.");
-    return;
-  }
-  try {
-    await navigator.clipboard.writeText(output.value);
-    alert("పబ్లిషింగ్ రెడీ ప్యూర్ టెక్స్ట్ కాపీ అయింది!");
-  } catch (e) {
-    alert("మన్యువల్‌గా Copy చేసుకోండి.");
-  }
-}
-
-function clearText() {
-  document.getElementById("rough").value = "";
-  document.getElementById("cleanContainer").innerHTML = "సరిదిద్దబడిన ప్యూర్ టెక్స్ట్ అంతర్జాతీయ లేఅవుట్ ఫాంట్‌తో ఇక్కడ కనిపిస్తుంది...";
-  document.getElementById("clean").value = "";
-}
-</script>
-
-</body>
-</html>
