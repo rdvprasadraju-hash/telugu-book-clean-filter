@@ -2,215 +2,56 @@
 <html lang="te">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v70.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>తెలుగు ఇంటెలిజెంట్ క్లీనర్ v95.0</title>
 <style>
-  :root {
-    --primary: #0f5132;
-    --bg-light: #f8f9fa;
-    --border-color: #dee2e6;
-  }
-  body {
-    font-family: 'Mandali', 'Pothana', 'Segoe UI', sans-serif;
-    margin: 0; padding: 0;
-    background-color: #f1f3f5; color: #212529;
-    display: flex; flex-direction: column; height: 100vh;
-  }
-  header {
-    background-color: #0f5132; color: white;
-    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
-  }
-  header h1 { margin: 0; font-size: 22px; }
-  .workspace { display: flex; flex: 1; overflow: hidden; }
-  .sidebar {
-    width: 280px; background-color: white; border-right: 1px solid var(--border-color);
-    padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 15px;
-  }
-  .panel-section { background-color: var(--bg-light); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; }
-  .action-btn { width: 100%; padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; border-radius: 6px; color: white; }
-  .btn-primary { background-color: var(--primary); }
-  .btn-secondary { background-color: #6c757d; }
-  .btn-info { background-color: #0d6efd; }
-  .btn-danger { background-color: #dc3545; }
-  
-  .main-editor { flex: 1; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 15px; }
-  .editor-block { display: flex; flex-direction: column; flex: 1; }
-  textarea { width: 100%; flex: 1; padding: 16px; font-size: 16px; line-height: 1.7; border: 1px solid var(--border-color); border-radius: 8px; resize: none; }
-  
-  .premium-preview {
-    width: 100%; flex: 1; background-color: #fffdf6; border: 1px solid var(--border-color); border-radius: 8px;
-    padding: 35px; box-sizing: border-box; font-size: 19px; line-height: 2.0; white-space: pre-wrap; overflow-y: auto;
-  }
-  
-  /* అంతర్జాతీయ బుక్ ప్రచురణ లేఅవుట్ ప్రమాణాలు (36px & 26px Center Lock) */
-  .main-chapter-style { font-size: 36px !important; font-weight: bold !important; color: #0f5132 !important; text-align: center !important; margin: 30px 0 15px 0 !important; display: block !important; line-height: 1.3 !important; }
-  .book-heading-style { font-size: 26px !important; font-weight: bold !important; color: #198754 !important; text-align: center !important; margin: 20px 0 !important; display: block !important; line-height: 1.4 !important; }
-  .book-paragraph { margin-bottom: 18px; text-align: justify; display: block; line-height: 1.8; }
+  body { font-family: sans-serif; margin: 0; padding: 20px; background: #f4f6f9; }
+  .box { width: 100%; max-width: 800px; margin: 10px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  textarea { width: 100%; height: 180px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+  .output { background: #fffdf6; border: 1px solid #ffecb5; min-height: 180px; padding: 10px; font-size: 17px; border-radius: 4px; white-space: pre-wrap; margin-top: 15px; line-height: 1.7; }
+  button { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; background: #0f5132; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>📚 తెలుగు బుక్ లేఅవుట్ & పబ్లిషింగ్ ప్రో v70.0</h1>
-</header>
-
-<div class="workspace">
-  <div class="sidebar">
-    <div class="panel-section">
-      <button class="action-btn btn-primary" onclick="processBookPublishing()">✨ లేఅవుట్ రన్ చేయి</button>
-      <div style="height: 8px;"></div>
-      <button class="action-btn btn-secondary" onclick="copyText()">📋 టెక్స్ట్ కాపీ చేయి</button>
-      <div style="height: 8px;"></div>
-      <button class="action-btn btn-info" onclick="window.print()">🖨️ పీడీఎఫ్ / ప్రింట్ తీయి</button>
-      <div style="height: 8px;"></div>
-      <button class="action-btn btn-danger" onclick="clearText()">🗑️ క్లియర్ బోర్డు</button>
-    </div>
-  </div>
-
-  <div class="main-editor">
-    <div class="editor-block">
-      <textarea id="rough" oninput="saveDraft()" placeholder="మీ పుస్తకం రఫ్ టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
-    </div>
-    <div class="editor-block">
-      <div id="cleanContainer" class="premium-preview">అంతర్జాతీయ పీడీఎఫ్ బుక్ లేఅవుట్ ఇక్కడ ప్రత్యక్షమవుతుంది...</div>
-    </div>
-  </div>
+<div class="box">
+  <h2 style="text-align:center; color:#0f5132; margin-top:0;">📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v95.0</h2>
+  <textarea id="in" placeholder="ఏఐ (AI) ఎన్ని తప్పులతో కంటెంట్ ఇచ్చినా సరే ఇక్కడ పేస్ట్ చేయండి..."></textarea>
+  <button onclick="universalClean()">✨ అన్ని తప్పులను ఒకేసారి సరిచేయి</button>
+  <button style="background:#0d6efd;" onclick="navigator.clipboard.writeText(document.getElementById('out').innerText); alert('కాపీ అయింది!');">📋 కాపీ చేయి</button>
+  <div id="out" class="output">సриదిద్దబడిన ప్యూర్ తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
-<textarea id="clean" style="display:none;"></textarea>
-
 <script>
-function saveDraft() { localStorage.setItem("rough_draft", document.getElementById("rough").value); }
-window.onload = function() {
-  let saved = localStorage.getItem("rough_draft");
-  if(saved) { document.getElementById("rough").value = saved; }
-};
+function universalClean() {
+  let text = document.getElementById("in").value;
+  if (!text) return;
 
-function smartUnicodeRepair(text) {
-  if (!text) return "";
-  let repairedText = text.normalize("NFC");
+  // 🌟 1. తెలుగు టెక్స్ట్ బైట్స్ ఒకే సరళరేఖలోకి తీసుకురావడం
+  let cleanText = text.normalize("NFC");
+
+  // 🌟 2. ఆటోమేటిక్ క్లీనర్: ఏఐ టెక్స్ట్ లో ఎక్కడైనా మిక్స్ అయిన రష్యన్/కిరిలిక్ అక్షరాలను వేరు చేస్తుంది
+  cleanText = cleanText.replace(/[\u0400-\u04FF]/g, ""); 
   
-  // 1. తెలుగు పాత అంకెలను అంతర్జాతీయ అంకెలుగా మార్చడం
-  repairedText = repairedText.replace(/[\u0C66-\u0C6F]/g, function(ch) {
-    return String.fromCharCode(ch.charCodeAt(0) - 0x0C66 + 48);
-  });
+  // 🌟 3. ఏఐ టెక్స్ట్ లో మిక్స్ అయిన దేవనాగరి/హిందీ ముక్కలను సమూలంగా తుడిచేస్తుంది
+  cleanText = cleanText.replace(/[\u0900-\u097F]/g, "");
 
-  // 2. విదేశీ కిరిలిక్/రష్యన్ అక్షరాల సార్వత్రిక శుద్ధి (v70.0 Engine)
-  repairedText = repairedText.replace(/మ\s*р\s*и\s*య\s*ు/gu, "మరియు");
-  repairedText = repairedText.replace(/మ\s*రి\s*и\s*య\s*ు/gu, "మరియు");
-  repairedText = repairedText.replace(/మриయు/gu, "మరియు");
-  repairedText = repairedText.replace(/మరిиయు/gu, "మరియు");
-  repairedText = repairedText.replace(/వ్యтиర్ేక/gu, "వ్యతిరేక");
-  repairedText = repairedText.replace(/వ్యతిర్ేక/gu, "వ్యతిరేక");
-  repairedText = repairedText.replace(/స్ట\s*థ\s*ти\s*లో/gu, "స్థితిలో");
-  repairedText = repairedText.replace(/ని\s*ర్\s*о\s*ల/gu, "నిర్మూలించడానికి");
-  repairedText = repairedText.replace(/కంటోో\s*л/gu, "కంట్రోల్");
-  repairedText = repairedText.replace(/అ\s*п\s*ు\s*గి\s*н\s*ు/gu, "అదుపును");
-  repairedText = repairedText.replace(/వివేకిం/gu, "వివేకం");
-  repairedText = repairedText.replace(/నియింతరణ/gu, "నియంత్రణ");
+  // 🌟 4. విడిపోయిన ఒత్తులు మరియు గుణింతాలను ఆటోమేటిక్ గా ఒక అయస్కాంతంలా కనెక్ట్ చేసే యూనివర్సల్ ఇంజన్
+  cleanText = cleanText.replace(/ర\s*్\s*ే/gu, "్రే"); 
+  cleanText = cleanText.replace(/ర\s*్\s*్రా/gu, "్రా"); 
+  cleanText = cleanText.replace(/ర\s*్\s*ా/gu, "్రా"); 
+  cleanText = cleanText.replace(/ర\s*్\s*ి/gu, "్రి"); 
+  cleanText = cleanText.replace(/త\s*ో\s*్/gu, "్తో"); 
+  cleanText = cleanText.replace(/్\s*ో/gu, "ో"); 
 
-  // 3. శీర్షిక మరియు అధ్యాయం పక్కా స్పెల్లింగ్ లాక్
-  repairedText = repairedText.replace(/(అధ్వయయిం|అధ్యాయం|అధ్యాయిం)/gu, "అధ్యాయం");
-  repairedText = repairedText.replace(/(శీరిషిక|శీర్ิషక|సిర్శిక|శీర్షిక|శ్\s*ీ\s*ర్\s*і\s*ష\s*క)/gu, "శీర్షిక");
-  repairedText = repairedText.replace(/హెచ్చరిక\s*శీర్షిక/gu, "హెచ్చరిక శీర్షిక");
+  // 🌟 5. సాధారణ ఒసిఆర్ టైపోస్ (శీర్షికలు, అధ్యాయాల ముద్ద పదాల క్లీనప్)
+  cleanText = cleanText.replace(/(అధ్వయయిం|అధ్యాయిం)/gu, "అధ్యాయం");
+  cleanText = cleanText.replace(/(శీరిషిక|శీర్ిషక|సిర్శిక|శీర\s*్\s*і\s*ష\s*క)/gu, "శీర్షిక");
+  cleanText = cleanText.replace(/ఆఖర్షశాసనం/g, "ఆఖరి శాసనం");
+  cleanText = cleanText.replace(/హెచిర్షక/g, "హెచ్చరిక");
 
-  // 4. తెలుగు ఒత్తులు మరియు గుణింతాల స్థిర అమరిక
-  repairedText = repairedText.replace(/ర\s*్\s*ే/gu, "్రే"); 
-  repairedText = repairedText.replace(/ర\s*్\s*్రా/gu, "్రా"); 
-  repairedText = repairedText.replace(/ర\s*్\s*ా/gu, "్రా"); 
-  repairedText = repairedText.replace(/ర\s*్\s*ి/gu, "్రి"); 
-  repairedText = repairedText.replace(/త\s*ో\s*్/gu, "్తో"); 
-  repairedText = repairedText.replace(/్\s*ో/gu, "ో"); 
-
-  // 5. సార్వత్రిక తెలుగు అక్షరదోషాల నిఘంటువు (v70.0 Cleaned Array)
-  let replacements = [
-    { from: "ఆఖర్షశాసనం", to: "ఆఖరి శాసనం" },
-    { from: "క్ోలోుతుని", to: "కోల్పోతున్న" },
-    { from: "చниపోతుని", to: "చనిపోతున్న" },
-    { from: "చనిపోతుని", to: "చనిపోతున్న" },
-    { from: "ముิందేగుర్ిషించ్చ", to: "ముందే గుర్తించి" },
-    { from: "హెచిర్షక", to: "హెచ్చరిక" },
-    { from: "భవిషయతుు", to: "భవిష్యత్తు" },
-    { from: "మ దడులోని", to: "మెదడులోని" },
-    { from: "పీాఫాంటల్", to: "ప్రీఫ్రంటల్" },
-    { from: "కవరెiక్స", to: "కార్טెక్స్" },
-    { from: "శ్киుని", to: "శльтиని" },
-    { from: "శ్కిుని", to: "శльтиని" },
-    { from: "దూసుకతప్్ తుని", to: "దూసుకుపోతున్న" },
-    { from: "స్టలికవన్స", to: "సిలికాన్" },
-    { from: "గవూటిఫటకేషన్స", to: "గ్రాటిఫికేషన్" },
-    { from: "ఊగిప్్తుని", to: "ఊగిపోతున్న" },
-    { from: "భయంకరమ ైన", to: "భయంకరమైన" },
-    { from: "నడుсуని", to: "నడుస్తున్న" },
-    { from: "నడుసుు ని", to: "నడుస్తున్న" },
-    { from: "నడుపపతునాiడు", to: "నడుపుతున్నాడు" },
-    { from: "సంబరపడుతునాiరే", to: "సంబరపడుతున్నారే" },
-    { from: "ఢీకొటిడానికిముందే", to: "ఢీకొట్టడానికి ముందే" },
-    { from: "పటలతపప!", to: "పిలుపు!" },
-    { from: "ముగషింపు", to: "ముగింపు" },
-    { from: "శాసనిం", to: "శాసనం" },
-    { from: "శూనయింలోని", to: "శూన్యంలోని" },
-    { from: "శూనయ", to: "శూన్య" },
-    { from: "గురుత్వాకరిణ", to: "గురుత్వాకర్షణ" },
-    { from: "త్ో", to: "తో" },
-    { from: "పరయాణవనిి", to: "ప్రయాణాన్ని" },
-    { from: "పాయాణానిి", to: "ప్రయాణాన్ని" },
-    { from: "విశ్ా", to: "విశ్వ" },
-    { from: "ముగషించే", to: "ముగించే" },
-    { from: "ముగशించే", to: "ముగించే" },
-    { from: "పర్షణవమ", to: "పరిణామ" },
-    { from: "ధరమిం", to: "ధర్మం" },
-    { from: "ధరమశ్వసనం", to: "ధర్మశాసనం" },
-    { from: "గందరగోళిం", to: "గందరగోళం" },
-    { from: "గందరగోళ్ం", to: "గందరగోళం" },
-    { from: "వెళ్లలప్్", to: "వెళ్లిపోయాక" },
-    { from: "వెళ్లులప్్", to: "వెళ్లిపోయాక" },
-    { from: "మారుు", to: "మార్పు" },
-    { from: "ఊహ ంచుకతందాం", to: "ఊహించుకుందాం" },
-    { from: "బిగ్ బ్యంగ్", to: "బిగ్ బ్యాంగ్" },
-    { from: "కేవలం", to: "కేవలం" },
-    { from: "పరతీకతాల్రాలు", to: "ప్రతీకారాలు" },
-    { from: "మర్షయు", to: "మరియు" },
-    { from: "జంతు పరవృతుiల", to: "జంతు ప్రవృత్తుల" },
-    { from: "జంతు పరవృతుిల", to: "జంతు ప్రవృత్తుల" },
-    { from: "పోతేీమనిష్పన", to: "పోతే మనిషిని" },
-    { from: "ఉనికకేేత్యనసమాద్i", to: "ఉనికికే అత్యంత సమాధి" },
-    { from: "తవపతకునే", to: "తప్పుకునే" },
-    { from: "ఊండనే", to: "ఉందనే" },
-    { from: "తాతివక హ చిరిక", to: "తాత్విక
-
-
-
-
-హెచ్చరిక" },
-    { from: "కతళముందు", to: "కళ్లముందు" },
-    { from: "రైతనాయవంతము", to: "చైతన్యవంతము" },
-    { from: "స్టలకవని", to: "చిట్టచివరకు" },
-    { from: "మేధసుస", to: "మేధస్సు" },
-    { from: "రుiంకోవడానికి", to: "రుద్దడానికి" },
-    { from: "కవరోర్ేట లాభల కోసం", to: "కార్పొరేట్ లాభాల కోసం" },
-    { from: "మధ్యాయ", to: "మరియు" },
-    { from: "యుదాధ ల", to: "యుద్ధాల" },
-    { from: "వపడుకతంటోంది", to: "వాడుకుంటోంది" },
-    { from: "వివేకవనిi", to: "వివేకాన్ని" },
-    { from: "సంసకరణల", to: "సంస్కరణల" },
-    { from: "సవధనంగవ", to: "సాధనంగా" },
-    { from: "మారికపోే తే", to: "మార్చుకోకపోతే" },
-    { from: "ఉనాముదానిi", to: "ఉన్నదానిని" },
-    { from: "తవపవకతనేలా", to: "తప్పుకోలేనంతగా" },
-    { from: "స్పృత్కరిను", to: "స్పృशించబోయే" },
-    { from: "మీంగేయబోతుని", to: "మింగేయబోతున్న" },
-    { from: "మనిష్PFC", to: "మనిషి PFC" },
-    { from: "స్పష్టో", to: "స్పష్టమైన" },
-    { from: "లోంటిమానవ్", to: "లాంటి మానవ" },
-    { from: "అమిగడలాక్ో", to: "అమిగ్డలా క్రో" },
-    { from: "చవర్గతరక", to: "చర్చించబోయే" },
-    { from: "నిోల", to: "నిర్మూలించడానికి" },
-    { from: "विదుయత్", to: "విద్యుత్" },
-    { from: "रूपాయంతరం", to: "रूపాంతరం" },
-    { from: "చతందాం", to: "చూద్దాం" },
-    { from: "చిట్టచవరకు", to: "చిట్టచివరకు" },
-    { from: "సంచలనమ", to: "సంచలనమైన" },
-    { from: "వైజఞానికచ", to: "వైజ్ఞానిక చైతన్య" },
-    { from: "చాిత్రక", to: "చారిత్రక" },
-    { from: "సజీవంగా", to: "సజీవంగా" },
+  document.getElementById("out").innerText = cleanText;
+}
+</script>
+</body>
+</html>
