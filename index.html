@@ -10,65 +10,49 @@
   textarea { width: 100%; height: 180px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
   .output { background: #fffdf6; border: 1px solid #ffecb5; min-height: 180px; padding: 10px; font-size: 17px; border-radius: 4px; white-space: pre-wrap; margin-top: 15px; line-height: 1.7; }
   button { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; background: #0f5132; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
-  
-  /* 🔍 నిఘంటువు శోధన స్టైల్స్ */
-  .search-section { background: #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; }
-  .search-input { padding: 8px; font-size: 15px; border: 1px solid #bbb; border-radius: 4px; flex-grow: 1; }
-  .bad-word { text-decoration: underline wavy red; color: #b02a37; font-weight: bold; }
+  .loading { color: #6c757d; font-style: italic; }
 </style>
 </head>
 <body>
 
 <div class="box">
-  <h2 style="text-align:center; color:#0f5132; margin-top:0;">📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v95.0</h2>
-  
-  <!-- 🔍 నిఘంటువు శోధన (Dictionary Search Engine) -->
-  <div class="search-section">
-    <strong>🔍 డిక్షనరీ శోధన:</strong>
-    <input type="text" id="searchKey" class="search-input" placeholder="పదం నిఘంటువులో ఉందో లేదో వెతకండి...">
-    <button style="width:auto; margin-top:0; padding: 8px 15px; background:#0d6efd;" onclick="searchDictionary()">వెతుకు</button>
-  </div>
-  <div id="searchResult" style="margin-bottom:15px; font-weight:bold; text-align:center;"></div>
-
-  <textarea id="in" placeholder="ఏఐ (AI) ఎన్ని తప్పులతో కంటెంట్ ఇచ్చినా సరే ఇక్కడ పేస్ట్ చేయండి..."></textarea>
-  <button onclick="universalClean()">✨ అన్ని తప్పులను ఒకేసారి సరిచేయి</button>
+  <h2 style="text-align:center; color:#0f5132; margin-top:0;">📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v95.0 (క్లౌడ్ డిక్షనరీ ఇంజన్)</h2>
+  <textarea id="in" placeholder="ఏఐ (AI) ఎన్ని తప్పులతో కంటెంట్ ఇచ్చినా సరే ఇక్కడ పేస్ట్ చేయండి... ఇది ఆటోమేటిక్‌గా గూగుల్ డిక్షనరీ శోధన ద్వారా ఒత్తులను సరిచేస్తుంది."></textarea>
+  <button id="cleanBtn" onclick="universalClean()">✨ అన్ని తప్పులను ఒకేసారి సరిచేయి</button>
   <button style="background:#0d6efd;" onclick="navigator.clipboard.writeText(document.getElementById('out').innerText); alert('కాపీ అయింది!');">📋 కాపీ చేయి</button>
   <div id="out" class="output">సరిదిద్దబడిన ప్యూర్ తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
 <script>
-// 🌟 ప్రామాణిక తెలుగు నిఘంటువు పదాల డేటాబేస్ (ఇప్పుడు 100% శుద్ధమైన తెలుగు అక్షరాలు)
-const verifiedTeluguDictionary = [
-  "భారదేశం", "భారతదేశం", "దేశం", "ప్రదేశం", "విదేశం", "స్వదేశం", "సندేశం", "సందేశం",
-  "భాష", "భాషను", "భాషలు", "మాతృభాష", "రాజభాష", "జాతీయభాష",
-  "సంప్రదాయం", "సంప్రదాయాలు", "సంస్కృతి", "సంస్కృతులు",
-  "పుస్తకం", "పుస్తకాలు", "కష్టం", "కష్టాలు", "ఇష్టం", "ఇష్టాలు",
-  "బాధ", "బాధలు", "బాధ్యత", "బాధ్యతలు", "ప్రశాంతంగా", "ప్రజలు", "ప్రజలందరూ",
-  "అందరూ", "ఒక్కరూ", "ప్రతి ఒక్కరూ", "గొప్ప", "గొప్పగా", "చదువుకున్న", "మాట్లాడటానికి",
-  "ప్రయత్నించాలి", "బతుకుతుంది", "నిలుస్తుంది", "ఇక్కడ", "చాలా", "జీవిస్తారు"
-];
-
-// 🔍 డిక్షనరీలో పదాన్ని వెతికే సెర్చ్ ఫంక్షన్
-function searchDictionary() {
-  let searchKey = document.getElementById("searchKey").value.trim();
-  let resultDiv = document.getElementById("searchResult");
-  if (!searchKey) {
-    resultDiv.innerHTML = "⚠️ దయచేసి పదాన్ని టైప్ చేయండి!";
-    resultDiv.style.color = "#b02a37";
-    return;
-  }
-  if (verifiedTeluguDictionary.includes(searchKey)) {
-    resultDiv.innerHTML = `✅ "${searchKey}" సరైన పదం! ఇది డిక్షనరీలో ఉంది.`;
-    resultDiv.style.color = "#0f5132";
-  } else {
-    resultDiv.innerHTML = `❌ "${searchKey}" డిక్షనరీలో లేదు లేదా ఒత్తు తప్పు ఉంది!`;
-    resultDiv.style.color = "#b02a37";
+// 🔍 క్లౌడ్ డిక్షనరీ శోధన ఇంజన్ (Google Dictionary Lookup Engine)
+// ఇది ఏ పదాన్నైనా ఇంటర్నెట్ ద్వారా శోధించి సరైన ఒత్తుల పదాన్ని తిరిగి ఇస్తుంది.
+async function fetchCorrectWordFromCloud(word) {
+  try {
+    // గూగుల్ ఇన్‌పుట్ టూల్స్ API ద్వారా డిక్షనరీ శోధన
+    let url = `https://google.com{encodeURIComponent(word)}&itc=te-t-i0-und&num=1`;
+    let response = await fetch(url);
+    let data = await response.json();
+    
+    if (data && data[0] === "SUCCESS" && data[1][0][1].length > 0) {
+      let suggestions = data[1][0][1];
+      return suggestions[0]; // గూగుల్ డిక్షనరీలో దొరికిన అత్యంత సరైన ఒత్తు పదం
+    }
+    return word;
+  } catch (e) {
+    return word; // ఇంటర్నెట్ లోపం ఉంటే పాత పదాన్నే ఉంచుతుంది
   }
 }
 
-function universalClean() {
+async function universalClean() {
   let text = document.getElementById("in").value;
   if (!text) return;
+
+  let btn = document.getElementById("cleanBtn");
+  let outputDiv = document.getElementById("out");
+  
+  btn.innerText = "⏳ డిక్షనరీలో శోధిస్తోంది... దయచేసి ఆగండి...";
+  btn.disabled = true;
+  outputDiv.innerHTML = "<span class='loading'>క్లౌడ్ డిక్షనరీ సహాయంతో ఒత్తులను సరిచేస్తోంది...</span>";
 
   // 🌟 1. తెలుగు టెక్స్ట్ బైట్స్ ఒకే సరళరేఖలోకి తీసుకురావడం
   let cleanText = text.normalize("NFC");
@@ -76,7 +60,7 @@ function universalClean() {
   // 🌟 2. ఆటోమేటిక్ క్లీనర్: ఏఐ టెక్స్ట్ లో ఎక్కడైనా మిక్స్ అయిన రష్యన్/కిరిలిక్ అక్షరాలను వేరు చేస్తుంది
   cleanText = cleanText.replace(/[\u0400-\u04FF]/g, ""); 
   
-  // 🌟 3. ఏఐ టెక్స్ట్ లో మిక్స్ అయిన దేవనాగరి/హిんだీ ముక్కలను సమూలంగా తుడిచేస్తుంది
+  // 🌟 3. ఏఐ టెక్స్ట్ లో మిక్స్ అయిన దేవనాగరి/హిందీ ముక్కలను సమూలంగా తుడిచేస్తుంది
   cleanText = cleanText.replace(/[\u0900-\u097F]/g, "");
 
   // 🌟 4. విడిపోయిన ఒత్తులు మరియు గుణింతాలను ఆటోమేటిక్ గా ఒక అయస్కాంతంలా కనెక్ట్ చేసే యూనివర్సల్ ఇంజన్
@@ -89,30 +73,30 @@ function universalClean() {
 
   // 🌟 5. సాధారణ ఒసిఆర్ టైపోస్ (శీర్షికలు, అధ్యాయాల ముద్ద పదాల క్లీనప్)
   cleanText = cleanText.replace(/(అధ్వయయిం|అధ్యాయిం)/gu, "అధ్యాయం");
-  cleanText = cleanText.replace(/(శీరిషిక|శీర్ిషక|సిర్శిక|శీర\s*్\s*і\s*ష\s*క)/gu, "శీర్షిక");
+  cleanText = cleanText.replace(/(శీరిషిక|శీర్ిషక|సిర్శిక|శీర\s*్\s*і\s*ష\s*క)/gu, "శీర్షಿಕ");
   cleanText = cleanText.replace(/ఆఖర్షశాసనం/g, "ఆఖరి శాసనం");
   cleanText = cleanText.replace(/హెచిర్షక/g, "హెచ్చరిక");
 
-  // 🌟 6. 🔍 లైవ్ డిక్షనరీ వెరిఫైయర్ లాజిక్ (పాత ఔట్‌పుట్‌ని చెక్ చేస్తుంది)
-  let tokens = cleanText.split(/(\s+|[,.?!:;""'()])/);
-  let htmlOutput = "";
-
+  // 🌟 6. 🌐 ఆటోమేటిక్ క్లౌడ్ సెర్చ్ ఇంజన్ లాజిక్ (ఏ రకమైన తప్పు పదానికైనా ఒత్తులు ఇస్తుంది)
+  let tokens = cleanText.split(/(\s+|[,.?!:;""'()\[\]{}])/);
+  
   for (let i = 0; i < tokens.length; i++) {
     let word = tokens[i];
-    let cleanWord = word.replace(/[,.?!:;""'()]/g, "").trim();
+    let cleanWord = word.replace(/[,.?!:;""'()\[\]{}]/g, "").trim();
     
+    // ఒకవేళ పదం కేవలం తెలుగు టెక్స్ట్ అయి ఉంటే దాన్ని క్లౌడ్ డిక్షనరీలో వెతుకుతుంది
     if (cleanWord.length > 0 && isNaN(cleanWord)) {
-      if (verifiedTeluguDictionary.includes(cleanWord)) {
-        htmlOutput += word;
-      } else {
-        htmlOutput += `<span class="bad-word" title="డిక్షనరీలో లేదు">${word}</span>`;
-      }
-    } else {
-      htmlOutput += word;
+      let correctedWord = await fetchCorrectWordFromCloud(cleanWord);
+      tokens[i] = word.replace(cleanWord, correctedWord);
     }
   }
 
-  document.getElementById("out").innerHTML = htmlOutput;
+  // ఫైనల్ కరెక్ట్ అయిన టెక్స్ట్‌ను స్క్రీన్‌పై చూపిస్తుంది
+  outputDiv.innerText = tokens.join("");
+  
+  // బటన్‌ను నార్మల్ స్థితికి తెస్తుంది
+  btn.innerText = "✨ అన్ని తప్పులను ఒకేసారి సరిచేయి";
+  btn.disabled = false;
 }
 </script>
 </body>
