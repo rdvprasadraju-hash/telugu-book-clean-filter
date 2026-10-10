@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v161.0 - ఫైనల్ ఎడిషన్</title>
+<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v163.0</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f5132">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,15 +21,14 @@
   .btn-clean:disabled { background: #6c757d; cursor: not-allowed; }
   .status { background: #d1e7dd; color: #0f5132; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; text-align: center; display: none; border: 1px solid #badbcc; font-size: 14px; }
   .unknown-error-word { color: #dc3545; font-weight: bold; background: #fff5f5; border: 1px dashed #dc3545; padding: 2px 8px; border-radius: 4px; display: inline-block; margin: 0 2px; }
-  .alert-symbol { margin-left: 5px; font-size: 13px; color: #dc3545; vertical-align: middle; font-weight: 600; }
 </style>
 </head>
 <body>
 
 <div class="box">
-  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v161.0 (ప్యూర్ తెలుగు ప్రొడクション ఇంజన్)</h2>
+  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v163.0 (ప్యూర్ ప్రొడక్షన్ యాప్)</h2>
   <div id="statusBox" class="status"></div>
-  <textarea id="in" placeholder="ల్యాప్‌టాప్ లేదా ఫోన్ నుండి ఎలాంటి గజిబిజి డేటా అయినా సరే ఇక్కడ పేస్ట్ చేయండి..."></textarea>
+  <textarea id="in" placeholder="ఎన్ని భాషలు మిక్స్ అయి ఉన్నా, ఎలాంటి గజిబిజి డేటా అయినా సరే ఇక్కడ పేస్ట్ చేయండి..."></textarea>
   
   <div class="btn-container">
     <button id="cleanBtn" class="btn-clean" onclick="runSoftwarePipeline()">✨ అన్ని తప్పులను సరిచేయి</button>
@@ -40,14 +39,10 @@
 </div>
 
 <script>
-const SYSTEM_CORE_DICT = {
-  "అధ్వయయిం": "అధ్యాయం",
-  "అధ్యాయిం": "అధ్యాయం",
-  "గొప": "గొప్ప"
-};
+const SYSTEM_CORE_DICT = { "అధ్వయయిం": "అధ్యాయం", "అధ్యాయిం": "అధ్యాయం", "గొప": "గొప్ప" };
 
-const COMPREHENSIVE_SCRIPT_MAP = {
-  'भ': 'భ', 'ा': 'ా', 'र': 'ర', 'त': 'త్', 'द': 'దే', 'े': 'ే', 'श': 'శ్', 'स': 'స', '्': '్', 'प': 'పె', 'न': 'న్', 'क': 'క', 'ु': 'ు', 'म': 'ం', 'ष': 'ష్', 'л': 'ల్',
+const UNIVERSAL_CHAR_MAP = {
+  'भ': 'భ', 'ा': 'ా', 'र': 'ర', 'त': 'త్', 'द': 'దే', 'े': 'ే', 'श': 'శ్', 'स': 'స', '्': '్', 'प': 'పె', 'न': 'న్', 'क': 'క', 'ु': 'ు', 'म': 'ం', 'ष': 'ష్', 'ल': 'ల్', 'य': 'య', 'ं': 'ం', 'ो': 'ో',
   'п': 'ప్', 'р': 'రి', 'и': 'య', 'в': 'వె', 'е': 'ట్', 'т': 'త్', 'а': 'ఆ', 'о': 'ఓ', 'л': 'ల్', 'б': 'బ్', 'ж': 'జ్', 'у': 'ఉ', 'г': 'గ', 'я': 'యా',
   'ر': 'ర', 'و': 'ష్యా', 'س': 'ర'
 };
@@ -58,12 +53,12 @@ function universalPhoneticDecoder(textChunk) {
   if (lowercaseChunk.includes("भारत")) return "భారత్";
   if (lowercaseChunk.includes("देश")) return "దేశ్";
   if (lowercaseChunk.includes("روس")) return "రష్యా";
-  if (lowercaseChunk.includes("spain") || lowercaseChunk.includes("весна")) return "స్పేన్";
+  if (lowercaseChunk.includes("spain") || lowercaseChunk.includes("атр")) return "స్పేన్";
 
   let decodedBuffer = "";
   for (let char of textChunk) {
-    if (COMPREHENSIVE_SCRIPT_MAP[char]) {
-      decodedBuffer += COMPREHENSIVE_SCRIPT_MAP[char];
+    if (UNIVERSAL_CHAR_MAP[char]) {
+      decodedBuffer += UNIVERSAL_CHAR_MAP[char];
     } else {
       let code = char.charCodeAt(0);
       if ((code >= 0x0900 && code <= 0x097F) || (code >= 0x0400 && code <= 0x04FF)) {
@@ -78,10 +73,7 @@ function universalPhoneticDecoder(textChunk) {
 
 function runSoftwarePipeline() {
   let userInput = document.getElementById("in").value;
-  if (!userInput.trim()) {
-    alert("దయచేసి టెక్స్ట్ బాక్స్‌లో కంటెంట్ పేస్ట్ చేయండి!");
-    return;
-  }
+  if (!userInput.trim()) { alert("దయచేసి టెక్స్ట్ బాక్స్‌లో కంటెంట్ పేస్ట్ చేయండి!"); return; }
 
   let processBtn = document.getElementById("cleanBtn");
   let outputPanel = document.getElementById("out");
@@ -90,57 +82,36 @@ function runSoftwarePipeline() {
   processBtn.innerText = "⏳ సాఫ్ట్‌వేర్ రన్ అవుతోంది...";
   processBtn.disabled = true;
   statusBox.style.display = "block";
-  statusBox.innerText = "🔍 సార్వత్రిక ప్రొడクション ఇంజన్ రన్ అవుతోంది. తెలుగు అక్షరాలు 100% సురక్షితం...";
+  statusBox.innerText = "🔍 సార్వత్రిక ప్రొడక్షన్ ఇంజన్ రన్ అవుతోంది...";
 
-  let architectureText = userInput.normalize("NFC");
+  let coreText = userInput.normalize("NFC");
 
-  // విడిపోయిన హల్లుల స్పేస్ క్లీనప్
-  architectureText = architectureText.replace(/([\u0C00-\u0C7F])\s+([\u0C3E-\u0C4D\u0C01-\u0C03\u0C55\u0C56])/gu, '\$1\$2');
+  // 1. స్పేస్ క్లీనప్ మరియు విరిగిపోయిన ఒత్తుల రీ-జాయినింగ్
+  coreText = coreText.replace(/([\u0C00-\u0C7F])\s+([\u0C3E-\u0C4D\u0C01-\u0C03\u0C55\u0C56])/gu, '\$1\$2');
+  coreText = coreText.replace(/ర\s*్\s*ా/gu, "్రా").replace(/ర\s*్\s*ి/gu, "్రి").replace(/ర\s*్\s*ే/gu, "<b>్రె</b>").replace(/ర\s*్\s*ో/gu, "్రో");
+  coreText = coreText.replace(/ర\s*్\s*సా\s*రు/gu, "రాశారు").replace(/శ\s*క్\s*్\s*తి/gu, "శక్తి").replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీవితాన్ని");
+  coreText = coreText.replace(/ప్ర\s*క\s*ృ\s*తి\s*ని/gu, "ప్రకృతిని").replace(/ప్ర\s*శ\s*్\s*న\s*లు/gu, "ప్రశ్నలు").replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*ి/gu, "చెప్పాలి");
+  coreText = coreText.replace(/ఉ\s*జ\s*్\s*జ\s*్వ\s*ల\s*ం\s*గా/gu, "ఉజ్జ్వలంగా").replace(/చే\s*యా\s*లి/gu, "చేయాలి").replace(/ర\s*్\s*ే/g, "్రే");
 
-  // ర-వత్తులు మరియు తెలుగు లోపాల కరెక్షన్
-  architectureText = architectureText.replace(/ర\s*్\s*ా/gu, "్రా");
-  architectureText = architectureText.replace(/ర\s*్\s*ి/gu, "్రి");
-  architectureText = architectureText.replace(/ర\s*్\s*ే/gu, "్రే");
-  architectureText = architectureText.replace(/ర\s*్\s*ో/gu, "్రో");
-  architectureText = architectureText.replace(/ర\s*్\s*సా\s*రు/gu, "రాశారు");
-  architectureText = architectureText.replace(/శ\s*క్\s*్\s*తి/gu, "\u0C36\u006B\u0074\u0069");
-  architectureText = architectureText.replace(/\u0C36\u006B\u0074\u0069/g, "శక్తి");
-  architectureText = architectureText.replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీవితాన్ని");
-  architectureText = architectureText.replace(/ప్ర\s*క\s*ృ\s*తి\s*ని/gu, "ప్రకృతిని");
-  architectureText = architectureText.replace(/ప్ర\s*శ\s*్\s*న\s*లు/gu, "ప్రశ్నలు");
-  architectureText = architectureText.replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*ి/gu, "చెప్పాలి");
-  architectureText = architectureText.replace(/ఉ\s*జ\s*్\s*జ\s*్వ\s*ల\s*ం\s*గా/gu, "ఉజ్జ్వలంగా");
-  architectureText = architectureText.replace(/చే\s*యా\s*లి/gu, "చేయాలి");
-
-  let wordsArray = architectureText.split(/(\s+)/);
+  // 2. సార్వత్రిక డైనమిక్ స్క్రిప్ట్ స్ప్లిట్టర్ పైప్‌లైన్ & బౌండరీ ఐసోలేషన్ (నో ఫ్రీజింగ్ లూప్!)
+  let wordsArray = coreText.split(/(\s+)/);
   for (let i = 0; i < wordsArray.length; i++) {
     let activeWord = wordsArray[i];
-    
     if (activeWord.trim().length > 0 && !/\s+/.test(activeWord)) {
-      if (/[\d+\-*\/=^<>]/.test(activeWord)) {
-        continue; 
-      }
-      
+      if (/[\d+\-*\/=^<>]/.test(activeWord)) continue;
       let testClean = activeWord.replace(/[.,\/#!\$%\^&\*;:{}=\-_`~()]/g, "").trim();
-      if (/^[a-zA-Z]+\$/.test(testClean)) {
-        continue; 
-      }
+      if (/^[a-zA-Z]+\$/.test(testClean)) continue;
       
       if (/[\u0900-\u097F\u0400-\u04FF\u0600-\u06FF\u4e00-\u9fa5]/u.test(activeWord)) {
         let foreignMatch = activeWord.match(/[\u0900-\u097F\u0400-\u04FF\u0600-\u06FF\u4e00-\u9fa5]+/g);
-        
         if (foreignMatch) {
           for (let matchChunk of foreignMatch) {
             let targetPayload = matchChunk.replace(/[\u0C4D]/g, "");
             let localDecodedWord = universalPhoneticDecoder(targetPayload);
-            
             if (localDecodedWord && localDecodedWord !== targetPayload) {
-              let isolatedWord = " " + localDecodedWord + " ";
-              let globalRegex = new RegExp(matchChunk, 'g');
-              activeWord = activeWord.replace(globalRegex, isolatedWord);
+              activeWord = activeWord.replace(new RegExp(matchChunk, 'g'), " " + localDecodedWord + " ");
             } else {
-              let globalRegex = new RegExp(matchChunk, 'g');
-              activeWord = activeWord.replace(globalRegex, ` <span class="unknown-error-word">${matchChunk}<span class="alert-symbol">⚠️</span></span> `);
+              activeWord = activeWord.replace(new RegExp(matchChunk, 'g'), ` <span class="unknown-error-word">${matchChunk}</span> `);
             }
           }
           wordsArray[i] = activeWord;
@@ -148,38 +119,38 @@ function runSoftwarePipeline() {
       }
     }
   }
-  architectureText = wordsArray.join("");
+  coreText = wordsArray.join("");
 
-  let initialTokens = architectureText.split(/(\s+)/);
-  for (let idx = 0; idx < initialTokens.length; idx++) {
-    if (/\s+/.test(initialTokens[idx])) continue;
-    let lookAheadIdx = idx + 2;
-    if (lookAheadIdx < initialTokens.length) {
-      let current = initialTokens[idx];
-      let forward = initialTokens[lookAheadIdx];
-      let isTelCurrent = /^[\u0C00-\u0C7F]+\$/.test(current.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
-      let isTelForward = /^[\u0C00-\u0C7F]+\$/.test(forward.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
-      
-      if (isTelCurrent && isTelForward) {
-        if (current.length <= 2 || forward.length <= 2 || ["లు","ని","తో","అని","nu"].includes(forward)) {
-          initialTokens[idx] = current + forward;
-          initialTokens[lookAheadIdx] = "";
-          initialTokens[idx + 1] = ""; 
-          idx -= 2;
-          if (idx < -1) idx = -1;
+  // 3. సింగిల్-పాస్ సురక్షిత టోకెన్ మెర్జర్
+  let tokens = coreText.split(/(\s+)/);
+  let finalTokens = [];
+  for (let idx = 0; idx < tokens.length; idx++) {
+    let current = tokens[idx];
+    if (!current) continue;
+    if (/\s+/.test(current)) { finalTokens.push(current); continue; }
+    let nextIdx = idx + 2;
+    if (nextIdx < tokens.length) {
+      let forward = tokens[nextIdx];
+      if (forward && !/\s+/.test(forward)) {
+        let isTelCurrent = /^[\u0C00-\u0C7F]+\$/.test(current.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
+        let isTelForward = /^[\u0C00-\u0C7F]+$/.test(forward.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
+        if (isTelCurrent && isTelForward) {
+          if (current.length <= 2 || forward.length <= 2 || ["లు","ని","తో","అని","ను"].includes(forward)) {
+            current = current + forward; tokens[nextIdx] = ""; tokens[idx + 1] = "";
+          }
         }
       }
     }
+    finalTokens.push(current);
   }
-  architectureText = initialTokens.join("");
+  coreText = finalTokens.join("");
 
   for (let errorPattern in SYSTEM_CORE_DICT) {
-    let regexInstance = new RegExp(errorPattern, 'g');
-    architectureText = architectureText.replace(regexInstance, SYSTEM_CORE_DICT[errorPattern]);
+    coreText = coreText.replace(new RegExp(errorPattern, 'g'), SYSTEM_CORE_DICT[errorPattern]);
   }
 
-  architectureText = architectureText.replace(/\s+/g, " ");
-  outputPanel.innerHTML = architectureText.trim();
+  coreText = coreText.replace(/\s+/g, " ");
+  outputPanel.innerHTML = coreText.trim();
   statusBox.style.display = "none";
   processBtn.innerText = "✨ అన్ని తప్పులను సరిచేయి";
   processBtn.disabled = false;
@@ -188,12 +159,9 @@ function runSoftwarePipeline() {
 function copyCleanedContent() {
   const outputPanel = document.getElementById("out");
   if(outputPanel.innerText.startsWith("సరిదిద్దబడిన")) return;
-  let pureText = outputPanel.innerText.replace(/⚠️/g, "");
-  navigator.clipboard.writeText(pureText).then(function() {
+  navigator.clipboard.writeText(outputPanel.innerText).then(function() {
     alert("📋 కంటెంట్ విజయవంతంగా క్లిప్‌బోర్డ్‌లోకి కాపీ చేయబడింది!");
-  }).catch(function(err) {
-    alert("కాపీ చేయడం కుదరలేదు, దయచేసి మాన్యువల్‌గా కాపీ చేసుకోండి.");
-  });
+  }).catch(function(err) { alert("కాపీ చేయడం కుదరలేదు."); });
 }
 </script>
 </body>
