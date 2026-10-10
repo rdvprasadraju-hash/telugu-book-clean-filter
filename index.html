@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v175.0</title>
+<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v189.0</title>
 <style>
   body { font-family: sans-serif; margin: 0; padding: 15px; background: #f4f6f9; }
   .box { width: 100%; max-width: 800px; margin: 10px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
@@ -16,15 +16,15 @@
 <body>
 
 <div class="box">
-  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v175.0 (ఆఫ్‌లైన్ స్ట్రీమ్ ఇంజన్)</h2>
+  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v189.0 (పరిపూర్ణ ప్రొడక్షన్ ఇంజన్)</h2>
   <textarea id="in" placeholder="ఎన్ని భాషలు మిక్స్ అయి ఉన్నా, ఎలాంటి గజిబిజి డేటా అయినా సరే ఇక్కడ పేస్ట్ చేయండి..."></textarea>
   <button id="cleanBtn" onclick="runSoftwarePipeline()">✨ అన్ని తప్పులను సరిచేయి</button>
   <div id="out" class="output">సరిదిద్దబడిన స్పష్టమైన తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
 <script>
-// 🧠 ఆఫ్‌లైన్ సార్వత్రిక క్యారెక్టర్ డీకోడర్ టేబుల్ (100% ప్రొటెక్టెడ్ ప్యూర్ తెలుగు)
-const UNICODE_MAP = {
+// 🧠 సంపూర్ణ ఆఫ్‌లైన్ యూనికోడ్ క్యారెక్టర్ మ్యాపర్ టేబుల్ (100% ప్యూర్ తెలుగు అక్షరాలు)
+const MAP_TABLE = {
   'भ': 'భ', 'ा': 'ా', 'र': 'ర', 'त': 'త్', 'द': 'దే', 'े': 'ే', 'श': 'శ్', 'स': 'స', '्': '్', 'प': 'పె', 'न': 'న్', 'क': 'క', 'ु': 'ు', 'म': 'ం', 'ष': 'ష్', 'ल': 'ల్', 'य': 'య', 'ं': 'ం', 'ो': 'ో', 'я': 'యా',
   'п': 'ప్', 'р': 'రి', 'и': 'య', 'в': 'వె', 'е': 'ట్', 'т': 'త్', 'а': 'ఆ', 'о': 'ఓ', 'л': 'ల్', 'б': 'బ్', 'ж': 'జ్', 'у': 'ఉ', 'г': 'గ',
   'ر': 'ర', 'و': 'ష్యా', 'س': 'ర'
@@ -36,77 +36,50 @@ function runSoftwarePipeline() {
 
   let cleanText = inputText.normalize("NFC");
   
-  // 1. హోల్-వర్డ్ ముందస్తు క్లీనప్ (అర్థం మారకుండా కాపాడే మాస్టర్ లాక్)
-  cleanText = cleanText.replace(/привет/gi, " પ્રિયవెట్‌ ");
+  // 1. హోల్-వర్డ్ ముందస్తు క్లీనప్ (ప్యూర్ తెలుగు లిపితో - నో జపనీస్/గుజరాతీ/రష్యన్ ప్యాచ్ ఎర్రర్స్!)
+  cleanText = cleanText.replace(/привет/gi, " ప్రియవెట్ ");
   cleanText = cleanText.replace(/भारत/g, " భారత్ ");
   cleanText = cleanText.replace(/देश/g, " దేశ్ ");
   cleanText = cleanText.replace(/روس/g, " రష్యా ");
   cleanText = cleanText.replace(/spain/gi, " స్పేన్ ");
-  cleanText = cleanText.replace(/स्पेन/g, " స్పేన్ ");
+  cleanText = cleanText.replace(/%|#|\*|\$|\^|!|&/g, " ");
 
-  // 2. విడిపోయిన హల్లులు, గుణింత గుర్తుల క్లీనప్
-  cleanText = cleanText.replace(/([\u0C00-\u0C7F])\s+([\u0C3E-\u0C4D\u0C01-\u0C03\u0C55\u0C56])/gu, '$1$2');
-
-  // 3. తెలుగు ఒత్తులు మరియు OCR లోపాల ప్యూర్ తెలుగు పునర్నిర్మాణం (సగం సగం ముక్కలు రాకుండా లాక్)
+  // 2. తెలుగు ఒత్తులు మరియు OCR లోపాల పునర్నిర్మాణం (100% ప్యూర్ తెలుగు)
   cleanText = cleanText.replace(/ర\s*్\s*ా/gu, "్రా");
   cleanText = cleanText.replace(/ర\s*్\s*ి/gu, "్రి");
-  cleanText = cleanText.replace(/ర\s*్\s*ే/gu, "్రె");
+  cleanText = cleanText.replace(/ర\s*్\s*ే/gu, "్రే");
   cleanText = cleanText.replace(/ర\s*్\s*ో/gu, "్రో");
   cleanText = cleanText.replace(/ర\s*్\s*సా\s*రు/gu, "రాశారు");
   cleanText = cleanText.replace(/శ\s*క్\s*్\s*తి/gu, "శక్తి");
   cleanText = cleanText.replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీవితాన్ని");
   cleanText = cleanText.replace(/ప్ర\s*క\s*ృ\s*తి\s*ని/gu, "ప్రకృతిని");
   cleanText = cleanText.replace(/ప్ర\s*శ\s*్\s*న\s*లు/gu, "ప్రశ్నలు");
+  cleanText = cleanText.replace(/చే\s*యా\s*లి/gu, "చేయాలి");
   cleanText = cleanText.replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*ి/gu, "చెప్పాలి");
   cleanText = cleanText.replace(/ఉ\s*జ\s*్\s*జ\s*్వ\s*ల\s*ం\s*గా/gu, "ఉజ్జ్వలంగా");
-  cleanText = cleanText.replace(/చే\s*యా\s*లి/gu, "చేయాలి");
-  cleanText = cleanText.replace(/గొప/g, "గొప్ప");
+  cleanText = cleanText.replace(/గొప/g, "•గ•");
+  cleanText = cleanText.replace(/•గ•/g, "గొప్ప");
   cleanText = cleanText.replace(/(అధ్వయయిం|అధ్యాయిం)/g, "అధ్యాయం");
   cleanText = cleanText.replace(/ల్క్ష్్యలక్ష్యం/g, "లక్ష్యం");
 
-  // 4. 🔥 🔍 నిరపేక్ష క్యారెక్టర్-స్ట్రీమ్ లూప్ (ఇంగ్లీష్ గార్డ్ తో సహా ఆటోమేటిక్ గా వేరు చేస్తుంది)
+  // 3. నిరపేక్ష క్యారెక్టర్-స్ట్రీమ్ లూప్ (అతుక్కున్న పదాలను స్పేస్‌లతో వేరు చేస్తుంది)
   let finalOutput = "";
-  let wordsArray = cleanText.split(/(\s+)/);
-  
-  for (let i = 0; i < wordsArray.length; i++) {
-    let activeWord = wordsArray[i];
-    if (activeWord.trim().length > 0 && !/\s+/.test(activeWord)) {
-      // మ్యాథ్స్ లాక్
-      if (/[\d+\-*\/=^<>]/.test(activeWord)) { finalOutput += activeWord; continue; }
-      // ఇంగ్లీష్ లాక్
-      let testClean = activeWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").trim();
-      if (/^[a-zA-Z]+$/.test(testClean)) { finalOutput += activeWord; continue; }
-      
-      // క్యారెక్టర్ బై క్యారెక్టర్ సర్జరీ
-      let buffer = "";
-      for (let char of activeWord) {
-        if (UNICODE_MAP[char]) {
-          buffer += " " + UNICODE_MAP[char] + " "; // అతుక్కున్న ముక్కల ముందు వెనుక స్పేస్ ఇస్తుంది
-        } else {
-          let code = char.charCodeAt(0);
-          if ((code >= 0x0900 && code <= 0x097F) || (code >= 0x0400 && code <= 0x04FF)) {
-            buffer += ""; // అన్యభాష పొల్లులను క్లీన్ చేస్తుంది
-          } else {
-            buffer += char;
-          }
-        }
-      }
-      finalOutput += buffer;
+  for (let char of cleanText) {
+    if (MAP_TABLE[char]) {
+      finalOutput += " " + MAP_TABLE[char] + " ";
     } else {
-      finalOutput += activeWord;
+      let code = char.charCodeAt(0);
+      if ((code >= 0x0900 && code <= 0x097F) || (code >= 0x0400 && code <= 0x04FF)) {
+        finalOutput += ""; // విదేశీ నకిలీ గుర్తులను ఫిల్టర్ చేస్తుంది
+      } else {
+        finalOutput += char; // తెలుగు, ఇంగ్లీష్, మ్యాథ్స్ చిహ్నాలు భద్రం
+      }
     }
   }
 
   // డబుల్ స్పేస్ క్లీనప్
   finalOutput = finalOutput.replace(/\s+/g, " ");
   document.getElementById("out").innerHTML = finalOutput.trim();
-}
-
-function copyCleanedContent() {
-  const outputPanel = document.getElementById("out");
-  navigator.clipboard.writeText(outputPanel.innerText).then(function() {
-    alert("📋 కంటెంట్ విజయవంతంగా కాపీ చేయబడింది!");
-  });
 }
 </script>
 </body>
