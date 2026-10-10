@@ -1,0 +1,17 @@
+{
+  "name": "సార్వత్రిక తెలుగు అక్షర క్లీనర్ v134.0",
+  "short_name": "తెలుగు క్లీనర్",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#0f5132",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://flaticon.com",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
