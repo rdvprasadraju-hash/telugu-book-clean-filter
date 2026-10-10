@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v158.0</title>
+<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v159.0</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f5132">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,7 +27,7 @@
 <body>
 
 <div class="box">
-  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v158.0 (అల్టిమేట్ ప్రొڈక్షన్ ఇంజన్)</h2>
+  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v159.0 (అల్టిమేట్ ఆఫ్‌లైన్ యాప్)</h2>
   <div id="statusBox" class="status"></div>
   <textarea id="in" placeholder="ల్యాప్‌టాప్ లేదా ఫోన్ నుండి ఎలాంటి గజిబిజి డేటా అయినా సరే ఇక్కడ పేస్ట్ చేయండి..."></textarea>
   
@@ -36,27 +36,24 @@
     <button style="background:#0d6efd; color:white; border:none; padding:14px; font-weight:bold; border-radius:8px; cursor:pointer;" onclick="copyCleanedContent()">📋 టెక్స్ట్ కాపీ చేయి</button>
   </div>
   
-  <div id="out" class="output">సరిదిద్దబడిన స్పష్టమైన తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
+  <div id="out" class="output">Sariదిద్దబడిన స్పష్టమైన తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
 <script>
-// కామన్ OCR ఓవర్లాప్ స్థానిక కరెక్షన్ నిఘంటువు
 const SYSTEM_CORE_DICT = {
   "అధ్వయయిం": "అధ్యాయం",
   "అధ్యాయిం": "అధ్యాయం",
-  "గొప": "穏"
+  "గొప": "గొప్ప"
 };
 
-// 🧠 గ్లోబల్ యూనికోడ్ క్యారెక్టర్ మ్యాపర్ టేబుల్
 const UNIVERSAL_CHAR_MAP = {
-  'भ': 'భ', 'ा': 'ా', 'र': 'ర', 'त': 'త్', 'द': 'దే', 'े': 'ే', 'श': 'శ్', 'स': 'స', '्': '్', 'प': 'పె', 'न': 'న్', 'क': 'క', 'ु': 'ు', 'म': 'ం', 'ष': 'ష్', 'ल': 'ల్', 'य': 'య', 'ं': 'ం', 'ो': 'ో',
+  'भ': 'భ', 'ा': 'ా', 'र': 'ర', 'त': 'త్', 'द': 'దే', 'े': 'ే', 'श': 'శ్', 'स': 'స', '्': '్', 'प': 'పె', 'न': 'న్', 'क': 'క', 'ु': 'ు', 'म': 'ం', 'ष': 'ష్', 'л': 'ల్',
   'п': 'ప్', 'р': 'రి', 'и': 'య', 'в': 'వె', 'е': 'ట్', 'т': 'త్', 'а': 'ఆ', 'о': 'ఓ', 'л': 'ల్', 'б': 'బ్', 'ж': 'జ్', 'у': 'ఉ', 'г': 'గ', 'я': 'యా',
   'ر': 'ర', 'و': 'ష్యా', 'س': 'ర'
 };
 
 function universalPhoneticDecoder(textChunk) {
   let lowercaseChunk = textChunk.toLowerCase();
-  // హోల్-వర్డ్ ముందస్తు రక్షణ షీల్డ్
   if (lowercaseChunk.includes("привет")) return "ప్రియవెట్";
   if (lowercaseChunk.includes("भारत")) return "భారత్";
   if (lowercaseChunk.includes("देश")) return "దేశ్";
@@ -69,7 +66,6 @@ function universalPhoneticDecoder(textChunk) {
       decodedBuffer += UNIVERSAL_CHAR_MAP[char];
     } else {
       let code = char.charCodeAt(0);
-      // అన్యభాష పరిధిలో ఉంటే ఫిల్టర్ చేస్తుంది
       if ((code >= 0x0900 && code <= 0x097F) || (code >= 0x0400 && code <= 0x04FF)) {
         decodedBuffer += "";
       } else {
@@ -94,60 +90,52 @@ function runSoftwarePipeline() {
   processBtn.innerText = "⏳ సాఫ్ట్‌വേర్ రన్ అవుతోంది...";
   processBtn.disabled = true;
   statusBox.style.display = "block";
-  statusBox.innerText = "🔍 సార్వత్రిక ప్రొڈక్షన్ ఇంజన్ రన్ అవుతోంది. తెలుగు అక్షరాలు 100% సురక్షితం...";
+  statusBox.innerText = "🔍 సార్వత్రిక ప్రొడクション ఇంజన్ రన్ అవుతోంది. తెలుగు అక్షరాలు 100% సురక్షితం...";
 
   let architectureText = userInput.normalize("NFC");
 
-  // 1. విడిపోయిన హల్లులు, గుణింత గుర్తుల మధ్య ఉన్న స్పేస్‌ల క్లీనప్
   let stateCheckpoint;
   do {
     stateCheckpoint = architectureText;
     architectureText = architectureText.replace(/([\u0C00-\u0C7F])\s+([\u0C3E-\u0C4D\u0C01-\u0C03\u0C55\u0C56])/gu, '\$1\$2');
   } while (architectureText !== stateCheckpoint);
 
-  // 2. తెలుగు ఒత్తులు మరియు లోపాల ప్రాథమిక రీ-జాయినింగ్
   architectureText = architectureText.replace(/ర\s*్\s*ా/gu, "్రా");
   architectureText = architectureText.replace(/ర\s*్\s*ి/gu, "్రి");
-  architectureText = architectureText.replace(/ర\s*్\s*ే/gu, "్రే");
+  architectureText = architectureText.replace(/ర\s*్\s*ే/gu, "्रे");
   architectureText = architectureText.replace(/ర\s*్\s*ో/gu, "్రో");
   architectureText = architectureText.replace(/ర\s*్\s*సా\s*రు/gu, "రాశారు");
   architectureText = architectureText.replace(/శ\s*క్\s*్\s*తి/gu, "శక్తి");
   architectureText = architectureText.replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీవితాన్ని");
   architectureText = architectureText.replace(/ప్ర\s*క\s*ృ\s*తి\s*ని/gu, "ప్రకృతిని");
   architectureText = architectureText.replace(/ప్ర\s*శ\s*్\s*న\s*లు/gu, "ప్రశ్నలు");
-  architectureText = architectureText.replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*ి/gu, "చెప్పాలి");
+  architectureText = architectureText.replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*і/gu, "చెప్పాలి");
   architectureText = architectureText.replace(/ఉ\s*జ\s*్\s*జ\s*్వ\s*ల\s*ం\s*గా/gu, "ఉజ్జ్వలంగా");
   architectureText = architectureText.replace(/చే\s*యా\s*లి/gu, "చేయాలి");
 
-  // 3. 🔥 🎯 సార్వత్రిక డైనమిక్ స్క్రిప్ట్ స్ప్లిట్టర్ పైప్‌లైన్ & ఆటోమేటెడ్ బౌండరీ ఐసోలేషన్
   let wordsArray = architectureText.split(/(\s+)/);
   for (let i = 0; i < wordsArray.length; i++) {
     let activeWord = wordsArray[i];
     
     if (activeWord.trim().length > 0 && !/\s+/.test(activeWord)) {
-      // మ్యాథ్స్ ప్రొటెక్షన్
       if (/[\d+\-*\/=^<>]/.test(activeWord)) {
         continue; 
       }
       
-      // ప్యూర్ ఇంగ్లీష్ లాక్
-      let testClean = activeWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").trim();
-      if (/^[a-zA-Z]+$/.test(testClean)) {
+      let testClean = activeWord.replace(/[.,\/#!\$%\^&\*;:{}=\-_`~()]/g, "").trim();
+      if (/^[a-zA-Z]+\$/.test(testClean)) {
         continue; 
       }
       
-      // సార్వత్రిక నాన్-తెలుగు లిపి ట్రాకింగ్ (హిందీ, రష్యన్, అరబిక్ ల సంపూర్ణ క్యాప్చర్)
       if (/[\u0900-\u097F\u0400-\u04FF\u0600-\u06FF\u4e00-\u9fa5]/u.test(activeWord)) {
         let foreignMatch = activeWord.match(/[\u0900-\u097F\u0400-\u04FF\u0600-\u06FF\u4e00-\u9fa5]+/g);
         
         if (foreignMatch) {
           for (let matchChunk of foreignMatch) {
-            // తెలుగు పొల్లు గుర్తు హలాంత్ (\u0C4D) ని ఫిల్టర్ చేస్తుంది
             let targetPayload = matchChunk.replace(/[\u0C4D]/g, "");
             let localDecodedWord = universalPhoneticDecoder(targetPayload);
             
             if (localDecodedWord && localDecodedWord !== targetPayload) {
-              // 🔥 అతుక్కున్న పదం ముందు మరియు వెనుక ఒక ఆటోమేటిక్ స్పేస్ ని ఇంజెక్ట్ చేస్తుంది!
               let isolatedWord = " " + localDecodedWord + " ";
               let globalRegex = new RegExp(matchChunk, 'g');
               activeWord = activeWord.replace(globalRegex, isolatedWord);
@@ -163,7 +151,6 @@ function runSoftwarePipeline() {
   }
   architectureText = wordsArray.join("");
 
-  // 4. ఇంటెలిజెంట్ సిలబుల్ మెర్జర్ (స్పేసెస్ ఉన్న పూర్తి తెలుగు ముక్కలను బంధించడం)
   let initialTokens = architectureText.split(/(\s+)/);
   for (let idx = 0; idx < initialTokens.length; idx++) {
     if (/\s+/.test(initialTokens[idx])) continue;
@@ -175,7 +162,7 @@ function runSoftwarePipeline() {
       let isTelForward = /^[\u0C00-\u0C7F]+\$/.test(forward.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
       
       if (isTelCurrent && isTelForward) {
-        if (current.length <= 2 || forward.length <= 2 || ["లు","ని","తో","అని","nu"].includes(forward)) {
+        if (current.length <= 2 || forward.length <= 2 || ["లు","ని","తో","అని","ను"].includes(forward)) {
           initialTokens[idx] = current + forward;
           initialTokens[lookAheadIdx] = "";
           initialTokens[idx + 1] = ""; 
@@ -192,9 +179,23 @@ function runSoftwarePipeline() {
     architectureText = architectureText.replace(regexInstance, SYSTEM_CORE_DICT[errorPattern]);
   }
 
-  // డబుల్ స్పేస్ మరియు ఫార్మాటింగ్ క్లీనప్
   architectureText = architectureText.replace(/\s+/g, " ");
-  
   outputPanel.innerHTML = architectureText.trim();
   statusBox.style.display = "none";
-  processBtn.innerText = "✨ అన్ని तప్పులను సరిచేయి";
+  processBtn.innerText = "✨ అన్ని తప్పులను సరిచేయి";
+  processBtn.disabled = false;
+}
+
+function copyCleanedContent() {
+  const outputPanel = document.getElementById("out");
+  if(outputPanel.innerText.startsWith("సరిదిద్దబడిన")) return;
+  let pureText = outputPanel.innerText.replace(/⚠️/g, "");
+  navigator.clipboard.writeText(pureText).then(function() {
+    alert("📋 కంటెంట్ విజయవంతంగా క్లిప్‌బోర్డ్‌లోకి కాపీ చేయబడింది!");
+  }).catch(function(err) {
+    alert("కాపీ చేయడం కుదరలేదు, దయచేసి మాన్యువల్‌గా కాపీ చేసుకోండి.");
+  });
+}
+</script>
+</body>
+</html>
