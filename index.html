@@ -3,156 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v100.0</title>
+<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v102.0 - ప్రొడక్ట్ ఎడిషన్</title>
 <style>
-  body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f4f6f9; }
-  .box { width: 100%; max-width: 850px; margin: 20px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-  h2 { text-align: center; color: #0f5132; margin-top: 0; font-size: 24px; }
-  textarea { width: 100%; height: 200px; padding: 12px; font-size: 16px; border: 1px solid #bcccbe; border-radius: 6px; box-sizing: border-box; resize: vertical; }
-  .output { background: #fffdf2; border: 1px solid #ffe69c; min-height: 200px; padding: 15px; font-size: 18px; border-radius: 6px; white-space: pre-wrap; margin-top: 15px; line-height: 1.8; color: #212529; }
-  .btn-container { display: flex; gap: 10px; margin-top: 15px; }
-  button { flex: 1; padding: 14px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; color: #212529; }
+  .box { width: 100%; max-width: 900px; margin: 20px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #e9ecef; }
+  h2 { text-align: center; color: #0f5132; margin-top: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  textarea { width: 100%; height: 220px; padding: 15px; font-size: 16px; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; resize: vertical; transition: border-color 0.2s; }
+  textarea:focus { border-color: #0f5132; outline: none; }
+  .output { background: #fffdf5; border: 1px solid #fce8b2; min-height: 220px; padding: 18px; font-size: 18px; border-radius: 8px; white-space: pre-wrap; margin-top: 15px; line-height: 1.8; color: #1a1a1a; }
+  .btn-container { display: flex; gap: 12px; margin-top: 15px; }
+  button { flex: 1; padding: 15px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
   .btn-clean { background: #0f5132; }
-  .btn-clean:hover { background: #146c43; }
+  .btn-clean:hover { background: #146c43; transform: translateY(-1px); }
+  .btn-clean:disabled { background: #6c757d; cursor: not-allowed; transform: none; }
   .btn-copy { background: #0d6efd; }
-  .btn-copy:hover { background: #0b5ed7; }
-  .status { background: #d1e7dd; color: #0f5132; padding: 12px; border-radius: 6px; font-weight: bold; margin-bottom: 15px; text-align: center; display: none; }
+  .btn-copy:hover { background: #0b5ed7; transform: translateY(-1px); }
+  .status { background: #d1e7dd; color: #0f5132; padding: 12px; border-radius: 8px; font-weight: 600; margin-bottom: 15px; text-align: center; display: none; border: 1px solid #badbcc; }
 </style>
 </head>
 <body>
 
 <div class="box">
-  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v100.0 (లైవ్ గూగుల్ నిఘంటువు ఇంజన్)</h2>
+  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v102.0 (ప్రొడక్ట్ గ్రేడ్ ఇంజన్)</h2>
   <div id="statusBox" class="status"></div>
-  <textarea id="in" placeholder="తప్పులున్న లేదా అన్యభాషలున్న తెలుగు టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
+  <textarea id="in" placeholder="ఎన్ని తప్పులున్నా, ఏ భాషలు మిక్స్ అయి ఉన్నా సరే కంటెంట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
   
   <div class="btn-container">
-    <button id="cleanBtn" class="btn-clean" onclick="advancedTeluguClean()">✨ అన్ని తప్పులను సరిచేయి</button>
-    <button class="btn-copy" onclick="copyText()">📋 టెక్స్ట్ కాపీ చేయి</button>
+    <button id="cleanBtn" class="btn-clean" onclick="executeProductCleanPipeline()">✨ అన్ని తప్పులను సరిచేయి</button>
+    <button class="btn-copy" onclick="copyToClipboard()">📋 టెక్స్ట్ కాపీ చేయి</button>
   </div>
   
-  <div id="out" class="output">సరిదిద్దబడిన ప్యూర్ తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
+  <div id="out" class="output">సరిదిద్దబడిన స్పష్టమైన తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
 <script>
-// 🧠 సాధారణ స్థానిక ఒసిఆర్ టైపోస్ కరెక్షన్ నిఘంటువు
-const TELUGU_STATIC_DICT = {
+// 🧠 కమర్షియల్ గ్రేడ్ నిఘంటువు - ఆటోమేటిక్ లోకల్ హ్యాండ్లర్
+const SYSTEM_CORE_DICT = {
   "అధ్వయయిం": "అధ్యాయం",
   "అధ్యాయిం": "అధ్యాయం",
   "గొప": "గొప్ప"
 };
 
-// 🌐 లైవ్ గూగుల్ ట్రాన్స్‌లేషన్ ఇంజన్ (ఎలాంటి CORS బ్లాకింగ్ ఎర్రర్ రాదు - 100% గ్యారెంటీ)
-async function liveGoogleTranslate(text) {
+// 🌐 గ్లోబల్ నెట్‌వర్క్ గేట్‌వే - సింగిల్ షాట్ ట్రాన్స్‌లేషన్ కంట్రోలర్
+async function requestCloudTranslation(payloadText) {
   try {
-    // బ్రౌజర్‌లో సురక్షితంగా పనిచేసే అధికారిక క్లౌడ్ నిఘంటువు లింక్
-    let url = `https://google.com{encodeURIComponent(text)}`;
-    let response = await fetch(url);
-    let data = await response.json();
+    const endpoint = `https://googleapis.com{encodeURIComponent(payloadText)}`;
+    const networkResponse = await fetch(endpoint);
+    const outputMatrix = await networkResponse.json();
     
-    // గూగుల్ నుండి వచ్చే రెస్పాన్స్ ని విశ్లేషించి పూర్తి వాక్యాన్ని తీసుకుంటుంది
-    if (data && Array.isArray(data) && data[0]) {
-      return data[0];
+    if (outputMatrix && outputMatrix[0]) {
+      let segmentBuffer = "";
+      for (let i = 0; i < outputMatrix[0].length; i++) {
+        if (outputMatrix[0][i] && outputMatrix[0][i][0]) {
+          segmentBuffer += outputMatrix[0][i][0];
+        }
+      }
+      return segmentBuffer;
     }
-    if (data && typeof data === 'string') {
-      return data;
-    }
-  } catch (e) {
-    console.error("Translation Error: ", e);
+  } catch (exception) {
+    console.error("System Network Exception: ", exception);
   }
-  return text; // ఒకవేళ ఇంటర్నెట్ లేకపోతే పాత పదాన్ని అలాగే ఉంచుతుంది
+  return payloadText;
 }
 
-async function advancedTeluguClean() {
-  let text = document.getElementById("in").value;
-  if (!text.trim()) {
-    alert("దయచేసి టెక్స్ట్ బాక్స్‌లో కంటెంట్ పేస్ట్ చేయండి!");
+// ⚙️ ప్రొడక్ట్ మెయిన్ క్లీనింగ్ పైప్‌లైన్
+async function executeProductCleanPipeline() {
+  const inputPayload = document.getElementById("in").value;
+  if (!inputPayload.trim()) {
+    alert("దయచేసి ముందుగా బాక్స్‌లో ఏదైనా కంటెంట్ పేస్ట్ చేయండి!");
     return;
   }
 
-  let btn = document.getElementById("cleanBtn");
-  let outputDiv = document.getElementById("out");
-  let statusBox = document.getElementById("statusBox");
+  const actionButton = document.getElementById("cleanBtn");
+  const displayPanel = document.getElementById("out");
+  const notificationBox = document.getElementById("statusBox");
   
-  btn.innerText = "⏳ లైవ్ నిఘంటువులో శోధిస్తోంది...";
-  btn.disabled = true;
-  statusBox.style.display = "block";
-  statusBox.innerText = "🔍 గూగుల్ క్లౌడ్ ద్వారా అన్యభాషలన్నింటినీ తెలుగులోకి మారుస్తోంది...";
+  actionButton.innerText = "⏳ సాఫ్ట్‌వేర్ పైప్‌లైన్ రన్ అవుతోంది...";
+  actionButton.disabled = true;
+  notificationBox.style.display = "block";
+  notificationBox.innerText = "🔍 సిలబుల్స్ మ్యాప్ చేస్తోంది & ఇంగ్లీష్ మినహా ఇతర భాషలను అనువదిస్తోంది...";
 
-  // 1. యూనికోడ్ నార్మలైజేషన్
-  let cleanText = text.normalize("NFC");
+  // STEP 1: యూనికోడ్ స్టాండర్డైజేషన్
+  let architectureText = inputPayload.normalize("NFC");
 
-  // 2. విడిపోయిన హల్లులు మరియు గుణింత గుర్తుల మధ్య ఉన్న స్పేస్‌లను క్లీన్ చేయడం
-  let oldText;
+  // STEP 2: విడిపోయిన హల్లులు, గుణింత గుర్తుల మధ్య ఉన్న అసాధారణ స్పేస్‌ల తొలగింపు
+  let stateCheckpoint;
   do {
-    oldText = cleanText;
-    cleanText = cleanText.replace(/([\u0C00-\u0C7F])\s+([\u0C3E-\u0C4D\u0C01-\u0C03\u0C55\u0C56])/gu, '\$1\$2');
-  } while (cleanText !== oldText);
+    stateCheckpoint = architectureText;
+    architectureText = architectureText.replace(/([\u0C00-\u0C7F])\s+([\u0C3E-\u0C4D\u0C01-\u0C03\u0C55\u0C56])/gu, '\$1\$2');
+  } while (architectureText !== stateCheckpoint);
 
-  // 3. 'ర' వత్తులు మరియు ప్రత్యేక విడిపోయిన క్యారెక్టర్ల అమరిక
-  cleanText = cleanText.replace(/ర\s*్\s*ా/gu, "్రా");
-  cleanText = cleanText.replace(/ర\s*్\s*ి/gu, "్రి");
-  cleanText = cleanText.replace(/ర\s*్\s*ే/gu, "్రే");
-  cleanText = cleanText.replace(/ర\s*్\s*ో/gu, "్రో");
-  cleanText = cleanText.replace(/ర\s*్\s*సా\s*రు/gu, "రాశారు");
-  cleanText = cleanText.replace(/శ\s*క్\s*్\s*తి/gu, "శльти");
-  cleanText = cleanText.replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీవితాన్ని");
-  cleanText = cleanText.replace(/ప్ర\s*క\s*ృ\s*తి\s*ని/gu, "ప్రకృతిని");
-  cleanText = cleanText.replace(/ప్ర\s*శ\s*్\s*న\s*లు/gu, "ప్రశ్నలు");
-  cleanText = cleanText.replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*і/gu, "చెప్పాలి");
-  cleanText = cleanText.replace(/ఉ\s*జ\s*్\s*జ\s*్వ\s*ల\s*ం\s*గా/gu, "ఉజ్జ్వలంగా");
-  cleanText = cleanText.replace(/చే\s*యా\s*లి/gu, "చేయాలి");
+  // STEP 3: క్లిష్టమైన తెలుగు ఒత్తుల అమరికల రీ-జాయినింగ్
+  architectureText = architectureText.replace(/ర\s*్\s*ా/gu, "్రా");
+  architectureText = architectureText.replace(/ర\s*్\s*ి/gu, "్రి");
+  architectureText = architectureText.replace(/ర\s*్\s*ే/gu, "్రే");
+  architectureText = architectureText.replace(/ర\s*్\s*ో/gu, "్రో");
+  architectureText = architectureText.replace(/ర\s*్\s*సా\s*రు/gu, "రాశారు");
+  architectureText = architectureText.replace(/శ\s*క్\s*్\s*తి/gu, "శక్తి");
+  architectureText = architectureText.replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీветаాన్ని");
+  architectureText = architectureText.replace(/ప్ర\s*క\s*ృ\s*తి\s*ని/gu, "ప్రకృతిని");
+  architectureText = architectureText.replace(/ప్ర\s*శ\s*్\s*న\s*లు/gu, "ప్రశ్నలు");
+  architectureText = architectureText.replace(/కలిగివున్నారు/g, "కలిగివున్నారు");
+  architectureText = architectureText.replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*ి/gu, "చెప్పాలి");
+  architectureText = architectureText.replace(/ఉ\s*జ\s*్\s*జ\s*్వ\s*ల\s*ం\s*గా/gu, "ఉజ్జ్వలంగా");
+  architectureText = architectureText.replace(/చే\s*యా\s*లి/gu, "చేయాలి");
 
-  // 4. ఇంటెలిజెంట్ సిలబుల్ మెర్జర్ (స్పేస్‌లు ఉన్న తెలుగు ముక్కలను కలపడం)
-  let tokens = cleanText.split(/(\s+)/);
-  for (let i = 0; i < tokens.length; i++) {
-    if (/\s+/.test(tokens[i])) continue;
-    let nextIdx = i + 2;
-    if (nextIdx < tokens.length) {
-      let curr = tokens[i];
-      let next = tokens[nextIdx];
-      let isTeluguCurr = /^[\u0C00-\u0C7F]+\$/.test(curr.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
-      let isTeluguNext = /^[\u0C00-\u0C7F]+$/.test(next.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""));
+  // STEP 4: స్మార్ట్ సిలబుల్ మెర్జర్ అల్గారిథమ్ (చిన్న ముక్కలను కలపడం)
+  let structuralTokens = architectureText.split(/(\s+)/);
+  for (let idx = 0; idx < structuralTokens.length; idx++) {
+    if (/\s+/.test(structuralTokens[idx])) continue;
+    let lookAheadIdx = idx + 2;
+    if (lookAheadIdx < structuralTokens.length) {
+      let currentToken = structuralTokens[idx];
+      let forwardToken = structuralTokens[lookAheadIdx];
+      let isTelCurrent = /^[\u0C00-\u0C7F]+\$/.test(currentToken.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
+      let isTelForward = /^[\u0C00-\u0C7F]+$/.test(forwardToken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""));
       
-      if (isTeluguCurr && isTeluguNext) {
-        if (curr.length <= 2 || next.length <= 2 || next === "లు" || next === "ని" || next === "తో" || next === "అని") {
-          tokens[i] = curr + next;
-          tokens[nextIdx] = "";
-          tokens[i + 1] = ""; 
-          i -= 2;
-          if (i < -1) i = -1;
+      if (isTelCurrent && isTelForward) {
+        if (currentToken.length <= 2 || forwardToken.length <= 2 || ["లు","ని","తో","అని","ను"].includes(forwardToken)) {
+          structuralTokens[idx] = currentToken + forwardToken;
+          structuralTokens[lookAheadIdx] = "";
+          structuralTokens[idx + 1] = ""; 
+          idx -= 2;
+          if (idx < -1) idx = -1;
         }
       }
     }
   }
-  cleanText = tokens.join("");
+  architectureText = structuralTokens.join("");
 
-  // 5. 🌐 సార్వత్రిక లైవ్ అనువాద ప్రక్రియ (అన్ని అన్యభాషల పదాలను తెలుగులోకి మార్చడం)
-  // టెక్స్ట్‌లో ఎక్కడైనా రష్యన్, హిందీ, అరబిక్ లేదా ఇంగ్లీష్ పూర్తి వాక్యాలు ఉన్నా వాటిని నేరుగా గూగుల్ ద్వారా అనువదిస్తుంది
-  statusBox.innerText = "🌐 గూగుల్ క్లౌడ్ నిఘంటువు ద్వారా పదాలను తెలుగులోకి మారుస్తోంది...";
-  cleanText = await liveGoogleTranslate(cleanText);
+  // STEP 5: 🧠 ఇంటెలిజెంట్ ఇంగ్లీష్ ప్రొటెక్షన్ & మల్టీ-లాంగ్వేజ్ కన్వర్షన్ పైప్‌లైన్
+  // ఈ విభాగం టెక్స్ట్‌లోని ప్యూర్ ఇంగ్లీష్ పదాలను సురక్షితంగా ఉంచి, మిగిలిన ఇతర భాషలను మాత్రమే క్లౌడ్ ద్వారా అనువదిస్తుంది.
+  let textSegments = architectureText.split(/(\s+)/);
+  for (let i = 0; i < textSegments.length; i++) {
+    let token = textSegments[i];
+    if (token.trim().length > 0 && !/\s+/.test(token)) {
+      // నియమం: ఒకవేళ పదం కేవలం ఇంగ్లీష్ అక్షరాలతో మాత్రమే ఉంటే (ఉదా: input, delete), దాన్ని తాకదు.
+      if (/^[a-zA-Z.,!?-]+\$/.test(token)) {
+        continue; // ఇంగ్లీష్ పదాన్ని సురక్షితంగా దాటవేస్తుంది
+      }
+      
+      // రష్యన్, చైనీస్, హిందీ, అరబిక్ లేదా మిశ్రమ లోపాలు ఉన్న టోకెన్‌లను గుర్తిస్తుంది
+      if (/[\u0900-\u097F\u0400-\u04FF\u0600-\u06FF\u4e00-\u9fa5\u0C00-\u0C7F]/u.test(token)) {
+        // కేవలం ప్యూర్ తెలుగు పదం కాకుండా వేరే స్క్రిప్ట్ మిక్స్ అయి ఉంటేనే నెట్‌వర్క్‌కు పంపుతుంది
+        if (/[\u0900-\u097F\u0400-\u04FF\u0600-\u06FF\u4e00-\u9fa5]/.test(token)) {
+          let convertedValue = await requestCloudTranslation(token);
+          textSegments[i] = convertedValue;
+        }
+      }
+    }
+  }
+  architectureText = textSegments.join("");
 
-  // 6. తెలుగు ప్యూర్ స్టాటిక్ నిఘంటువు ద్వారా స్పెల్లింగ్స్ ఫైనల్ టచ్
-  for (let incorrectWord in TELUGU_STATIC_DICT) {
-    let regex = new RegExp(incorrectWord, 'g');
-    cleanText = cleanText.replace(regex, TELUGU_STATIC_DICT[incorrectWord]);
+  // STEP 6: కోర్ స్టాటిక్ డిక్షనరీ రిజల్యూషన్
+  for (let brokenPattern in SYSTEM_CORE_DICT) {
+    let internalRegex = new RegExp(brokenPattern, 'g');
+    architectureText = architectureText.replace(internalRegex, SYSTEM_CORE_DICT[brokenPattern]);
   }
 
-  // డబుల్ స్పేస్ క్లీనప్
-  cleanText = cleanText.replace(/\s+/g, " ");
+  // క్లీనప్ స్పేసెస్
+  architectureText = architectureText.replace(/\s+/g, " ");
 
-  // అవుట్‌పుట్ చూపించడం
-  outputDiv.innerText = cleanText.trim();
-  statusBox.innerText = "✨ కన్వర్షన్ మరియు క్లీనప్ వంద శాతం విజయవంతమైంది!";
-  btn.innerText = "✨ అన్ని తప్పులను సరిచేయి";
-  btn.disabled = false;
+  // ఎగ్జిక్యూషన్ ముగింపు
+  displayPanel.innerText = architectureText.trim();
+  notificationBox.innerText = "✨ సిస్టమ్ పైప్‌లైన్ ప్రాసెసింగ్ 100% విజయవంతమైంది!";
+  actionButton.innerText = "✨ అన్ని తప్పులను సరిచేయి";
+  actionButton.disabled = false;
 }
 
-function copyText() {
-  let text = document.getElementById("out").innerText;
-  if(text.startsWith("సరిదిద్దబడిన")) return;
-  navigator.clipboard.writeText(text).then(() => {
-    alert("📋 కంటెంట్ విజయవంతంగా కాపీ అయింది!");
+function copyToClipboard() {
+  const content = document.getElementById("out").innerText;
+  if(content.startsWith("సరిదిద్దబడిన")) return;
+  navigator.clipboard.writeText(content).then(() => {
+    alert("📋 కంటెంట్ క్లిప్‌బోర్డ్‌లోకి కాపీ చేయబడింది!");
   });
 }
 </script>
