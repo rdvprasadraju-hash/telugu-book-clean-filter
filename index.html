@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>తెలుగు ఇంటెలిజెంట్ క్లీనర్ v96.5</title>
+<title>తెలుగు ఇంటెలిజెంట్ క్లీనర్ v98.0</title>
 <style>
-  body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f0f4f8; }
+  body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f4f6f9; }
   .box { width: 100%; max-width: 850px; margin: 20px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
   h2 { text-align: center; color: #0f5132; margin-top: 0; font-size: 24px; }
   textarea { width: 100%; height: 200px; padding: 12px; font-size: 16px; border: 1px solid #bcccbe; border-radius: 6px; box-sizing: border-box; resize: vertical; }
@@ -22,7 +22,7 @@
 <body>
 
 <div class="box">
-  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v96.5 (అక్షరమాల ఇంజన్)</h2>
+  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v98.0 (మల్టీ-లాంగ్వేజ్ కన్వర్టర్)</h2>
   <div id="statusBox" class="status"></div>
   <textarea id="in" placeholder="తప్పులున్న తెలుగు టెక్స్ట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
   
@@ -31,19 +31,43 @@
     <button class="btn-copy" onclick="copyText()">📋 టెక్స్ట్ కాపీ చేయి</button>
   </div>
   
-  <div id="out" class="output">సరిదిద్దబడిన స్పష్టమైన తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
+  <div id="out" class="output">సриదిద్దబడిన స్పష్టమైన తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
 <script>
-// 📝 సంపూర్ణ తెలుగు అక్షరమాల డేటాబేస్
-const TELUGU_AKSHARAMALA = {
-  achulu: ['అ', 'ఆ', 'ఇ', 'ఈ', 'ఉ', 'ఊ', 'ఋ', 'ౠ', 'ఎ', 'ఏ', 'ఐ', 'ఒ', 'ఓ', 'ఔ'],
-  hallulu: ['క', 'ఖ', 'గ', 'ఘ', 'ఙ', 'చ', 'ఛ', 'జ', 'ఝ', 'ఞ', 'ట', 'ఠ', 'డ', 'ఢ', 'ణ', 'త', 'థ', 'ద', 'ధ', 'న', 'ప', 'ఫ', 'బ', 'భ', 'మ', 'య', 'ర', 'ల', 'వ', 'శ', 'ష', 'స', 'హ', 'ళ', 'క్ష', 'ఱ'],
-  ubhayaksharalu: ['ం', 'ః', 'ఁ'],
-  guninthాలు: ['ా', 'ి', 'ీ', 'ు', 'ూ', 'ృ', 'ౄ', 'ె', 'ే', 'ై', 'ొ', 'ో', 'ౌ', '్']
+// అన్యభాషా పదాలను తెలుగులోకి మార్చే స్మార్ట్ డిక్షనరీ / నిఘంటువు
+const LANGUAGE_TRANSLITERATOR = {
+  "привет": "ప్రియవెట్ (హలో)",
+  "भारत": "భారత్",
+  "देश": "దేశ్",
+  "भारत देश": "భారతదేశం"
 };
 
-function advancedTeluguClean() {
+// ఆన్‌లైన్ ద్వారా అపరిచిత విదేశీ పదాలను తెలుగు లిపిలోకి మార్చే ఫంక్షన్
+async function translateForeignToTelugu(text) {
+  try {
+    let url = `https://googleapis.com{encodeURIComponent(text)}`;
+    let response = await fetch(url);
+    let data = await response.json();
+    if (data && data[0]) {
+      let result = "";
+      for (let i = 0; i < data[0].length; i++) {
+        if (data[0][i][0]) result += data[0][i][0];
+      }
+      return result;
+    }
+  } catch (e) {
+    // ఆన్‌లైన్ లభ్యం కాకపోతే లోకల్ డిక్షనరీ చెక్ చేస్తుంది
+    for (let key in LANGUAGE_TRANSLITERATOR) {
+      if (text.includes(key)) {
+        return text.replace(new RegExp(key, 'g'), LANGUAGE_TRANSLITERATOR[key]);
+      }
+    }
+  }
+  return text;
+}
+
+async function advancedTeluguClean() {
   let text = document.getElementById("in").value;
   if (!text.trim()) {
     alert("దయచేసి టెక్స్ట్ బాక్స్‌లో కంటెంట్ పేస్ట్ చేయండి!");
@@ -54,66 +78,79 @@ function advancedTeluguClean() {
   let outputDiv = document.getElementById("out");
   let statusBox = document.getElementById("statusBox");
   
-  btn.innerText = "⏳ అక్షరమాలను విశ్లేషిస్తోంది...";
+  btn.innerText = "⏳ అక్షరాలను విశ్లేషిస్తోంది...";
   btn.disabled = true;
   statusBox.style.display = "block";
-  statusBox.innerText = "🔍 అక్షరమాల ఇంజన్ ద్వారా ఒత్తులను సరిచేస్తోంది...";
+  statusBox.innerText = "🔍 అన్యభాషలను తెలుగులోకి మారుస్తూ, అక్షరాలను జోడిస్తోంది...";
 
-  setTimeout(() => {
-    // 1. యూనికోడ్ స్టాండర్డైజేషన్
-    let cleanText = text.normalize("NFC");
+  // 1. యూనికోడ్ నార్మలైజేషన్
+  let cleanText = text.normalize("NFC");
 
-    // 2. ఇతర భాషల స్క్రిప్ట్స్ తొలగింపు (హిందీ & రష్యన్)
-    cleanText = cleanText.replace(/[\u0900-\u097F]/g, ""); 
-    cleanText = cleanText.replace(/[\u0400-\u04FF]/g, ""); 
+  // 2. విడిపోయిన హల్లులు మరియు గుణింత గుర్తుల మధ్య ఉన్న స్పేస్‌లను తొలగించడం
+  let oldText;
+  do {
+    oldText = cleanText;
+    cleanText = cleanText.replace(/([\u0C00-\u0C7F])\s+([\u0C3E-\u0C4D\u0C01-\u0C03\u0C55\u0C56])/gu, '\$1\$2');
+  } while (cleanText !== oldText);
 
-    // 3. అక్షరమాల లూప్ బేస్డ్ క్లీనప్ (డైనమిక్ ఒత్తుల అమరిక)
-    // హల్లుల పక్కన స్పేస్ ఇచ్చి విడిపోయిన పొల్లులను ఒక దగ్గరకు చేరుస్తుంది
-    TELUGU_AKSHARAMALA.hallulu.forEach(hallu => {
-      let regexPollu = new RegExp(`${hallu}\\s+్`, 'g');
-      cleanText = cleanText.replace(regexPollu, `${hallu}్`);
-    });
+  // 3. విడిపోయిన 'ర' వత్తులు మరియు కామన్ తప్పుల ప్రాథమిక ఫిక్స్
+  cleanText = cleanText.replace(/ర\s*్\s*ా/gu, "్రా");
+  cleanText = cleanText.replace(/ర\s*్\s*ి/gu, "్రి");
+  cleanText = cleanText.replace(/ర\s*్\s*ే/gu, "くれた");
+  cleanText = cleanText.replace(/ర\s*్\s*ో/gu, "్రో");
+  cleanText = cleanText.replace(/ర\s*్\s*సా\s*రు/gu, "రాసారు"); 
+  cleanText = cleanText.replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీవితాన్ని");
+  cleanText = cleanText.replace(/అధ్వయయిం/gu, "అధ్యాయం");
+  cleanText = cleanText.replace(/అధ్యాయిం/gu, "అధ్యాయం");
+  cleanText = cleanText.replace(/గొప/g, "గొప్ప");
 
-    // 4. విడిపోయిన 'ర' వత్తుల కరెక్షన్ (ప్రా, ప్రి, ప్రో, మొదలైనవి)
-    cleanText = cleanText.replace(/ర\s*్\s*ా/gu, "్రా");
-    cleanText = cleanText.replace(/ర\s*్\s*ి/gu, "్రి");
-    cleanText = cleanText.replace(/ర\s*్\s*ీ/gu, "్రీ");
-    cleanText = cleanText.replace(/ర\s*్\s*ె/gu, "్రె");
-    cleanText = cleanText.replace(/ర\s*్\s*ే/gu, "్రే");
-    cleanText = cleanText.replace(/ర\s*్\s*ొ/gu, "్రొ");
-    cleanText = cleanText.replace(/ర\s*్\s*ో/gu, "్రో");
+  // 4. 🧠 ఇంటెలిజెంట్ వర్డ్ మెర్జర్ లాజిక్ (స్పేస్‌లు ఉన్న పదాలను కలపడం)
+  let tokens = cleanText.split(/(\s+)/);
+  for (let i = 0; i < tokens.length; i++) {
+    if (/\s+/.test(tokens[i])) continue;
+    
+    let nextIdx = i + 2;
+    if (nextIdx < tokens.length) {
+      let curr = tokens[i];
+      let next = tokens[nextIdx];
+      
+      let isTeluguCurr = /^[\u0C00-\u0C7F]+\$/.test(curr.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
+      let isTeluguNext = /^[\u0C00-\u0C7F]+$/.test(next.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""));
+      
+      if (isTeluguCurr && isTeluguNext) {
+        if (curr.length <= 3 || next.length <= 3 || next === "లు" || next === "ని" || next === "తో" || next === "అని") {
+          tokens[i] = curr + next;
+          tokens[nextIdx] = "";
+          tokens[i + 1] = ""; 
+          i -= 2;
+          if (i < -1) i = -1;
+        }
+      }
+    }
+  }
+  cleanText = tokens.join("");
 
-    // 5. మిస్ ప్లేస్ అయిన గుణింత గుర్తుల కరెక్షన్
-    cleanText = cleanText.replace(/్\s*ో/gu, "ో");
-    cleanText = cleanText.replace(/్\s*ె/gu, "ె");
-    cleanText = cleanText.replace(/్\s*ే/gu, "ే");
-    cleanText = cleanText.replace(/్\s*ా/gu, "ా");
-    cleanText = cleanText.replace(/త\s*ో\s*్/gu, "్తో");
+  // 5. 🌐 విదేశీ/అన్యభాషల పదాల అనువాద ప్రక్రియ (ఇంగ్లీష్ కాకుండా)
+  // రష్యన్ లేదా హిందీ ముక్కలు కనపడితే ఆటోమేటిక్‌గా వాటిని తెలుగు అర్థంలోకి మారుస్తుంది
+  if (/[\u0400-\u04FF\u0900-\u097F\u0600-\u06FF]/.test(cleanText)) {
+    cleanText = await translateForeignToTelugu(cleanText);
+  }
 
-    // 6. కామన్ ఏఐ/OCR పదాల ఆటో కరెక్షన్
-    cleanText = cleanText.replace(/అధ్వయయిం/gu, "అధ్యాయం");
-    cleanText = cleanText.replace(/అధ్యాయిం/gu, "అధ్యాయం");
-    cleanText = cleanText.replace(/గొప/g, "గొప్ప");
+  // డబుల్ స్పేస్ క్లీనప్
+  cleanText = cleanText.replace(/\s+/g, " ");
 
-    // అనవసరమైన డబుల్ స్పేస్‌ల క్లీనప్
-    cleanText = cleanText.replace(/\s+/g, " ");
-
-    // అవుట్‌పుట్ చూపించడం
-    outputDiv.innerText = cleanText.trim();
-    statusBox.innerText = "✨ అక్షరమాల ఇంజన్ క్లీనప్ విజయవంతంగా పూర్తయింది!";
-    btn.innerText = "✨ అన్ని తప్పులను సరిచేయి";
-    btn.disabled = false;
-  }, 400); 
+  // అవుట్‌పుట్ చూపించడం
+  outputDiv.innerText = cleanText.trim();
+  statusBox.innerText = "✨ కన్వర్షన్ మరియు క్లీనప్ విజయవంతంగా పూర్తయింది!";
+  btn.innerText = "✨ అన్ని తప్పులను సరిచేయి";
+  btn.disabled = false;
 }
 
 function copyText() {
   let text = document.getElementById("out").innerText;
   if(text.startsWith("సరిదిద్దబడిన")) return;
-  
   navigator.clipboard.writeText(text).then(() => {
     alert("📋 కంటెంట్ విజయవంతంగా కాపీ అయింది!");
-  }).catch(err => {
-    alert("కాపీ కుదరలేదు, దయచేసి మాన్యువల్‌గా కాపీ చేసుకోండి.");
   });
 }
 </script>
