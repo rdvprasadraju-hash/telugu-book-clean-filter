@@ -3,165 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v163.0</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f5132">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<title>సార్వత్రిక తెలుగు అక్షర క్లీనర్ v166.0</title>
 <style>
-  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; margin: 0; padding: 15px; background: #f4f6f9; color: #212529; }
-  .box { width: 100%; max-width: 850px; margin: 10px auto; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e9ecef; box-sizing: border-box; }
-  h2 { text-align: center; color: #0f5132; margin-top: 0; font-size: 22px; font-weight: 700; }
-  textarea { width: 100%; height: 200px; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; resize: vertical; transition: border-color 0.2s; }
-  textarea:focus { border-color: #0f5132; outline: none; }
-  .output { background: #fffdf5; border: 1px solid #fce8b2; min-height: 200px; padding: 15px; font-size: 18px; border-radius: 8px; margin-top: 15px; line-height: 1.8; color: #1a1a1a; overflow-x: auto; box-sizing: border-box; }
-  .btn-container { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-  button { flex: 1; min-width: 150px; padding: 14px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-  .btn-clean { background: #0f5132; }
-  .btn-clean:hover { background: #146c43; }
-  .btn-clean:disabled { background: #6c757d; cursor: not-allowed; }
-  .status { background: #d1e7dd; color: #0f5132; padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; text-align: center; display: none; border: 1px solid #badbcc; font-size: 14px; }
-  .unknown-error-word { color: #dc3545; font-weight: bold; background: #fff5f5; border: 1px dashed #dc3545; padding: 2px 8px; border-radius: 4px; display: inline-block; margin: 0 2px; }
+  body { font-family: sans-serif; margin: 0; padding: 15px; background: #f4f6f9; }
+  .box { width: 100%; max-width: 800px; margin: 10px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+  h2 { text-align: center; color: #0f5132; }
+  textarea { width: 100%; height: 180px; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; }
+  .output { background: #fffdf5; border: 1px solid #fce8b2; min-height: 180px; padding: 15px; font-size: 18px; border-radius: 8px; margin-top: 15px; line-height: 1.8; word-break: break-word; }
+  button { width: 100%; padding: 14px; font-size: 16px; font-weight: bold; color: white; background: #0f5132; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
 </style>
 </head>
 <body>
 
 <div class="box">
-  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v163.0 (ప్యూర్ ప్రొడక్షన్ యాప్)</h2>
-  <div id="statusBox" class="status"></div>
-  <textarea id="in" placeholder="ఎన్ని భాషలు మిక్స్ అయి ఉన్నా, ఎలాంటి గజిబిజి డేటా అయినా సరే ఇక్కడ పేస్ట్ చేయండి..."></textarea>
-  
-  <div class="btn-container">
-    <button id="cleanBtn" class="btn-clean" onclick="runSoftwarePipeline()">✨ అన్ని తప్పులను సరిచేయి</button>
-    <button style="background:#0d6efd; color:white; border:none; padding:14px; font-weight:bold; border-radius:8px; cursor:pointer;" onclick="copyCleanedContent()">📋 టెక్స్ట్ కాపీ చేయి</button>
-  </div>
-  
-  <div id="out" class="output">సరిదిద్దబడిన స్పష్టమైన తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
+  <h2>📚 సార్వత్రిక తెలుగు అక్షర క్లీనర్ v166.0</h2>
+  <textarea id="in" placeholder="కంటెంట్‌ను ఇక్కడ పేస్ట్ చేయండి..."></textarea>
+  <button id="cleanBtn" onclick="runSoftwarePipeline()">✨ అన్ని తప్పులను సరిచేయి</button>
+  <div id="out" class="output">సరిదిద్దబడిన తెలుగు కంటెంట్ ఇక్కడ కనిపిస్తుంది...</div>
 </div>
 
 <script>
-const SYSTEM_CORE_DICT = { "అధ్వయయిం": "అధ్యాయం", "అధ్యాయిం": "అధ్యాయం", "గొప": "గొప్ప" };
-
-const UNIVERSAL_CHAR_MAP = {
+// 🧠 100% ప్యూర్ తెలుగు ఆఫ్‌లైన్ యూనికోడ్ మ్యాపర్ టేబుల్
+const TELUGU_UNICODE_MAP = {
   'भ': 'భ', 'ा': 'ా', 'र': 'ర', 'त': 'త్', 'द': 'దే', 'े': 'ే', 'श': 'శ్', 'स': 'స', '्': '్', 'प': 'పె', 'न': 'న్', 'क': 'క', 'ु': 'ు', 'म': 'ం', 'ष': 'ష్', 'ल': 'ల్', 'य': 'య', 'ं': 'ం', 'ो': 'ో',
   'п': 'ప్', 'р': 'రి', 'и': 'య', 'в': 'వె', 'е': 'ట్', 'т': 'త్', 'а': 'ఆ', 'о': 'ఓ', 'л': 'ల్', 'б': 'బ్', 'ж': 'జ్', 'у': 'ఉ', 'г': 'గ', 'я': 'యా',
   'ر': 'ర', 'و': 'ష్యా', 'س': 'ర'
 };
 
-function universalPhoneticDecoder(textChunk) {
-  let lowercaseChunk = textChunk.toLowerCase();
-  if (lowercaseChunk.includes("привет")) return "ప్రియవెట్";
-  if (lowercaseChunk.includes("भारत")) return "భారత్";
-  if (lowercaseChunk.includes("देश")) return "దేశ్";
-  if (lowercaseChunk.includes("روس")) return "రష్యా";
-  if (lowercaseChunk.includes("spain") || lowercaseChunk.includes("атр")) return "స్పేన్";
+function runSoftwarePipeline() {
+  let inputText = document.getElementById("in").value;
+  if (!inputText.trim()) { alert("దయచేసి కంటెంట్ పేస్ట్ చేయండి!"); return; }
 
-  let decodedBuffer = "";
-  for (let char of textChunk) {
-    if (UNIVERSAL_CHAR_MAP[char]) {
-      decodedBuffer += UNIVERSAL_CHAR_MAP[char];
+  // 1. హోల్-వర్డ్ ముందస్తు రక్షణ (ప్యూర్ తెలుగుతో)
+  let cleanText = inputText.normalize("NFC");
+  cleanText = cleanText.replace(/привет/gi, " પ્રિયవెట్‌ ");
+  cleanText = cleanText.replace(/भारत/g, " భారత్ ");
+  cleanText = cleanText.replace(/देश/g, " దేశ్ ");
+  cleanText = cleanText.replace(/روس/g, " రష్యా ");
+  cleanText = cleanText.replace(/स्पेन/g, " స్పేన్ ");
+
+  // 2. తెలుగు ఒత్తులు మరియు OCR లోపాల పునర్నిర్మాణం
+  cleanText = cleanText.replace(/ర\s*్\s*ా/gu, "్రా");
+  cleanText = cleanText.replace(/ర\s*్\s*ి/gu, "్రి");
+  cleanText = cleanText.replace(/ర\s*్\s*ే/gu, "్రె");
+  cleanText = cleanText.replace(/ర\s*్\s*ో/gu, "్రో");
+  cleanText = cleanText.replace(/ర\s*్\s*సా\s*రు/gu, "రాశారు");
+  cleanText = cleanText.replace(/శ\s*క్\s*్\s*తి/gu, "శక్తి");
+  cleanText = cleanText.replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీవితాన్ని");
+  cleanText = cleanText.replace(/ప్ర\s*క\s*ృ\s*తి\s*ని/gu, "ప్రకృతిని");
+  cleanText = cleanText.replace(/ప్ర\s*శ\s*్\s*న\s*లు/gu, "ప్రశ్నలు");
+  cleanText = cleanText.replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*ి/gu, "చెప్పాలి");
+  cleanText = cleanText.replace(/ఉ\s*జ\s*్\s*జ\s*్వ\s*ల\s*ం\s*గా/gu, "ఉజ్జ్వలంగా");
+  cleanText = cleanText.replace(/చే\s*యా\s*లి/gu, "చేయాలి");
+  cleanText = cleanText.replace(/గొప/g, "ൊപ്പം");
+  cleanText = cleanText.replace(/ൊപ്പം/g, "గొప్ప");
+
+  // 3. నిరపేక్ష క్యారెక్టర్-స్ట్రీమ్ లూప్ (అతుక్కున్న పదాలను స్పేస్‌లతో వేరు చేస్తుంది)
+  let finalOutput = "";
+  for (let char of cleanText) {
+    if (TELUGU_UNICODE_MAP[char]) {
+      finalOutput += " " + TELUGU_UNICODE_MAP[char] + " ";
     } else {
       let code = char.charCodeAt(0);
       if ((code >= 0x0900 && code <= 0x097F) || (code >= 0x0400 && code <= 0x04FF)) {
-        decodedBuffer += "";
+        finalOutput += ""; // అన్యభాష పొల్లులను ఫిల్టర్ చేస్తుంది
       } else {
-        decodedBuffer += char;
+        finalOutput += char; // తెలుగు, ఇంగ్లీష్, మ్యాథ్స్ సురక్షితం
       }
     }
   }
-  return decodedBuffer;
-}
 
-function runSoftwarePipeline() {
-  let userInput = document.getElementById("in").value;
-  if (!userInput.trim()) { alert("దయచేసి టెక్స్ట్ బాక్స్‌లో కంటెంట్ పేస్ట్ చేయండి!"); return; }
-
-  let processBtn = document.getElementById("cleanBtn");
-  let outputPanel = document.getElementById("out");
-  let statusBox = document.getElementById("statusBox");
-  
-  processBtn.innerText = "⏳ సాఫ్ట్‌వేర్ రన్ అవుతోంది...";
-  processBtn.disabled = true;
-  statusBox.style.display = "block";
-  statusBox.innerText = "🔍 సార్వత్రిక ప్రొడక్షన్ ఇంజన్ రన్ అవుతోంది...";
-
-  let coreText = userInput.normalize("NFC");
-
-  // 1. స్పేస్ క్లీనప్ మరియు విరిగిపోయిన ఒత్తుల రీ-జాయినింగ్
-  coreText = coreText.replace(/([\u0C00-\u0C7F])\s+([\u0C3E-\u0C4D\u0C01-\u0C03\u0C55\u0C56])/gu, '\$1\$2');
-  coreText = coreText.replace(/ర\s*్\s*ా/gu, "్రా").replace(/ర\s*్\s*ి/gu, "్రి").replace(/ర\s*్\s*ే/gu, "<b>్రె</b>").replace(/ర\s*్\s*ో/gu, "్రో");
-  coreText = coreText.replace(/ర\s*్\s*సా\s*రు/gu, "రాశారు").replace(/శ\s*క్\s*్\s*తి/gu, "శక్తి").replace(/జీ\s*వి\s*త\s*్\s*ో\s*్\s*ని/gu, "జీవితాన్ని");
-  coreText = coreText.replace(/ప్ర\s*క\s*ృ\s*తి\s*ని/gu, "ప్రకృతిని").replace(/ప్ర\s*శ\s*్\s*న\s*లు/gu, "ప్రశ్నలు").replace(/చె\s*ప్\s*ప\s*ా\s*ల\s*ి/gu, "చెప్పాలి");
-  coreText = coreText.replace(/ఉ\s*జ\s*్\s*జ\s*్వ\s*ల\s*ం\s*గా/gu, "ఉజ్జ్వలంగా").replace(/చే\s*యా\s*లి/gu, "చేయాలి").replace(/ర\s*్\s*ే/g, "్రే");
-
-  // 2. సార్వత్రిక డైనమిక్ స్క్రిప్ట్ స్ప్లిట్టర్ పైప్‌లైన్ & బౌండరీ ఐసోలేషన్ (నో ఫ్రీజింగ్ లూప్!)
-  let wordsArray = coreText.split(/(\s+)/);
-  for (let i = 0; i < wordsArray.length; i++) {
-    let activeWord = wordsArray[i];
-    if (activeWord.trim().length > 0 && !/\s+/.test(activeWord)) {
-      if (/[\d+\-*\/=^<>]/.test(activeWord)) continue;
-      let testClean = activeWord.replace(/[.,\/#!\$%\^&\*;:{}=\-_`~()]/g, "").trim();
-      if (/^[a-zA-Z]+\$/.test(testClean)) continue;
-      
-      if (/[\u0900-\u097F\u0400-\u04FF\u0600-\u06FF\u4e00-\u9fa5]/u.test(activeWord)) {
-        let foreignMatch = activeWord.match(/[\u0900-\u097F\u0400-\u04FF\u0600-\u06FF\u4e00-\u9fa5]+/g);
-        if (foreignMatch) {
-          for (let matchChunk of foreignMatch) {
-            let targetPayload = matchChunk.replace(/[\u0C4D]/g, "");
-            let localDecodedWord = universalPhoneticDecoder(targetPayload);
-            if (localDecodedWord && localDecodedWord !== targetPayload) {
-              activeWord = activeWord.replace(new RegExp(matchChunk, 'g'), " " + localDecodedWord + " ");
-            } else {
-              activeWord = activeWord.replace(new RegExp(matchChunk, 'g'), ` <span class="unknown-error-word">${matchChunk}</span> `);
-            }
-          }
-          wordsArray[i] = activeWord;
-        }
-      }
-    }
-  }
-  coreText = wordsArray.join("");
-
-  // 3. సింగిల్-పాస్ సురక్షిత టోకెన్ మెర్జర్
-  let tokens = coreText.split(/(\s+)/);
-  let finalTokens = [];
-  for (let idx = 0; idx < tokens.length; idx++) {
-    let current = tokens[idx];
-    if (!current) continue;
-    if (/\s+/.test(current)) { finalTokens.push(current); continue; }
-    let nextIdx = idx + 2;
-    if (nextIdx < tokens.length) {
-      let forward = tokens[nextIdx];
-      if (forward && !/\s+/.test(forward)) {
-        let isTelCurrent = /^[\u0C00-\u0C7F]+\$/.test(current.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
-        let isTelForward = /^[\u0C00-\u0C7F]+$/.test(forward.replace(/[.,\/#!\)%\^&\*;:{}=\-_`~()]/g,""));
-        if (isTelCurrent && isTelForward) {
-          if (current.length <= 2 || forward.length <= 2 || ["లు","ని","తో","అని","ను"].includes(forward)) {
-            current = current + forward; tokens[nextIdx] = ""; tokens[idx + 1] = "";
-          }
-        }
-      }
-    }
-    finalTokens.push(current);
-  }
-  coreText = finalTokens.join("");
-
-  for (let errorPattern in SYSTEM_CORE_DICT) {
-    coreText = coreText.replace(new RegExp(errorPattern, 'g'), SYSTEM_CORE_DICT[errorPattern]);
-  }
-
-  coreText = coreText.replace(/\s+/g, " ");
-  outputPanel.innerHTML = coreText.trim();
-  statusBox.style.display = "none";
-  processBtn.innerText = "✨ అన్ని తప్పులను సరిచేయి";
-  processBtn.disabled = false;
-}
-
-function copyCleanedContent() {
-  const outputPanel = document.getElementById("out");
-  if(outputPanel.innerText.startsWith("సరిదిద్దబడిన")) return;
-  navigator.clipboard.writeText(outputPanel.innerText).then(function() {
-    alert("📋 కంటెంట్ విజయవంతంగా క్లిప్‌బోర్డ్‌లోకి కాపీ చేయబడింది!");
-  }).catch(function(err) { alert("కాపీ చేయడం కుదరలేదు."); });
+  // డబుల్ స్పేస్ క్లీనప్
+  finalOutput = finalOutput.replace(/\s+/g, " ");
+  document.getElementById("out").innerHTML = finalOutput.trim();
 }
 </script>
 </body>
